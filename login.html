@@ -20,6 +20,7 @@ p{color:var(--muted);font-size:13px;margin:8px 0 24px}
 button{background:linear-gradient(135deg,#f0d99b,#b88d3e);color:#17130b;border:0;border-radius:10px;padding:12px 18px;font-weight:800;width:100%;margin-top:12px;cursor:pointer}
 .hint{font-size:11px;color:#777;margin-top:18px}
 #error{color:#e28b8b;font-size:12px;margin-top:10px;min-height:18px}
+select.field{margin-bottom:10px;color:#eee}
 </style>
 </head>
 <body>
@@ -28,10 +29,20 @@ button{background:linear-gradient(135deg,#f0d99b,#b88d3e);color:#17130b;border:0
 <div class="eyebrow">PRIVATE ACCESS</div>
 <h1>1171 HOME</h1>
 <p>COMMAND CENTER · STRATEGY & MANAGEMENT</p>
+
 <form id="form">
-<input class="field" id="password" type="password" placeholder="Erişim parolası" autocomplete="current-password" required autofocus>
+<select class="field" id="loginType">
+<option value="user">Normal Kullanıcı Girişi</option>
+<option value="admin">Yönetici Girişi</option>
+</select>
+
+<input class="field" id="password" type="password"
+placeholder="Erişim parolası"
+autocomplete="current-password" required autofocus>
+
 <button type="submit">SİSTEME GİRİŞ YAP →</button>
 </form>
+
 <div id="error"></div>
 <div class="hint">1171 COMMAND CENTER</div>
 </main>
@@ -40,13 +51,18 @@ button{background:linear-gradient(135deg,#f0d99b,#b88d3e);color:#17130b;border:0
 const form=document.getElementById('form');
 const pass=document.getElementById('password');
 const error=document.getElementById('error');
+const loginType=document.getElementById('loginType');
 
 form.addEventListener('submit',async e=>{
 e.preventDefault();
 error.textContent='Kontrol ediliyor…';
 
+const endpoint=loginType.value==='admin'
+?'/admin-auth'
+:'/auth';
+
 try{
-const r=await fetch('/auth',{
+const r=await fetch(endpoint,{
 method:'POST',
 headers:{'Content-Type':'application/json'},
 body:JSON.stringify({password:pass.value})
@@ -80,7 +96,9 @@ body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial
 document.head.appendChild(style);
 setTimeout(()=>location.replace('/'),2400);
 }else{
-error.textContent='Parola hatalı. Tekrar deneyin.';
+error.textContent=loginType.value==='admin'
+?'Yönetici parolası hatalı. Tekrar deneyin.'
+:'Parola hatalı. Tekrar deneyin.';
 pass.select();
 }
 }catch(_){
