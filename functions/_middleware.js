@@ -110,9 +110,13 @@ export async function onRequest(context) {
     return Response.redirect(new URL("/login", request.url), 302);
   }
 
-  if (path.startsWith("/admin-api/") && role !== "admin") {
-    return new Response("Yönetici yetkisi gerekli.", { status: 403 });
-  }
+  if (
+  path.startsWith("/admin-api/") &&
+  request.method !== "GET" &&
+  role !== "admin"
+) {
+  return new Response("Yönetici yetkisi gerekli.", { status: 403 });
+}
 
   return next();
 }
