@@ -88,20 +88,142 @@ async function checkUserRole() {
   }
 }
 
-checkUserRole();
 const $=id=>document.getElementById(id);
 $('logoutBtn').onclick=()=>{location.href='/logout'};
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showPanel(b.dataset.panel));
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>showPanel(b.dataset.go));
 function showPanel(id){
   if(id==="admin" && currentRole!=="admin") return;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.panel===id));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));}
-let players=JSON.parse(localStorage.getItem('1171_players')||'[]');
-function renderPlayers(){ $('memberCount').textContent=players.length; $('rosterBody').innerHTML=players.length?players.map((p,i)=>`<tr><td>${esc(p.name)}</td><td>${esc(p.power)}</td><td>${esc(p.role)}</td><td><button class="small-btn" onclick="removePlayer(${i})">Sil</button></td></tr>`).join(''):'<tr><td colspan="4" style="color:#888">Henüz oyuncu eklenmedi.</td></tr>'; }
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-$('addPlayer').onclick=()=>{let name=$('playerName').value.trim();if(!name)return;players.push({name,power:$('playerPower').value.trim(),role:$('playerRole').value.trim()});localStorage.setItem('1171_players',JSON.stringify(players));$('playerName').value=$('playerPower').value=$('playerRole').value='';renderPlayers();$('activity').textContent='Kadroya yeni oyuncu eklendi.';};
-window.removePlayer=i=>{players.splice(i,1);localStorage.setItem('1171_players',JSON.stringify(players));renderPlayers();};renderPlayers();
-function csv(){let rows=[['Oyuncu','Güç / Puan','Rol'],...players.map(p=>[p.name,p.power,p.role])];let blob=new Blob(['\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n')],{type:'text/csv;charset=utf-8;'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='1171-battle-roster.csv';a.click();URL.revokeObjectURL(a.href);}
-$('exportCsv').onclick=csv;$('exportAdmin').onclick=csv;
+let players = [];
+
+function renderPlayers() {
+  $('memberCount').textContent = players.length;
+
+  $('rosterBody').innerHTML = players.length
+    ? players.map(p => `
+      <tr>
+        <td>${esc(p.name)}</td>
+        <td>${esc(p.power || '')}</td>
+        <td>${esc(p.role || '')}</td>
+        <td>${currentRole === 'admin'
+          ? `<button class="small-btn" onclick="removePlayer(${p.id})">Sil</button>`
+          : ''
+        }</td>
+      </tr>
+    `).join('')
+    : '<tr><td colspan="4" style="color:#888">Henüz oyuncu eklenmedi.</td></tr>';
+}
+
+async function loadPlayers() {
+  try {
+    const response = await fetch('/admin-api/players', {
+      cache: 'no-store'
+    });
+
+    if (!response.ok) throw new Error('Oyuncular yüklenemedi.');
+
+    players = await response.json();
+    renderPlayers();
+  } catch (error) {
+    $('rosterBody').innerHTML =
+      '<tr><td colspan="4">Oyuncu listesi yüklenemedi. Lütfen sayfayı yenileyin.</td></tr>';
+  }
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[c]));
+}
+
+async function addPlayerToDatabase() {
+  if (currentRole !== 'admin') return;
+
+  let name = $('playerName').value.trim();
+  if (!name) return;
+
+  const response = await fetch('/admin-api/players', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      power: $('playerPower').value.trim(),
+      role: $('playerRole').value.trim()
+    })
+  });
+
+  if (!response.ok) {
+    alert('Oyuncu eklenemedi.');
+    return;
+  }
+
+  $('playerName').value = '';
+  $('playerPower').value = '';
+  $('playerRole').value = '';
+
+  await loadPlayers();
+  $('activity').textContent = 'Kadroya yeni oyuncu eklendi.';
+}
+
+$('addPlayer').onclick = addPlayerToDatabase;
+
+window.removePlayer = async id => {
+  if (currentRole !== 'admin') return;
+
+  const response = await fetch('/admin-api/players', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id })
+  });
+
+  if (!response.ok) {
+    alert('Oyuncu silinemedi.');
+    return;
+  }
+
+  await loadPlayers();
+};
+
+function csv() {
+  let rows = [
+    ['Oyuncu', 'Güç / Puan', 'Rol'],
+    ...players.map(p => [p.name, p.power, p.role])
+  ];
+
+  let blob = new Blob([
+    '\ufeff' + rows.map(r =>
+      r.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(';')
+    ).join('\n')
+  ], { type: 'text/csv;charset=utf-8;' });
+
+  let a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '1171-battle-roster.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+$('exportCsv').onclick = csv;
+$('exportAdmin').onclick = csv;
+
+async function initPlayers() {
+  await checkUserRole();
+
+  if (currentRole !== 'admin') {
+    $('addPlayer').style.display = 'none';
+    $('playerName').disabled = true;
+    $('playerPower').disabled = true;
+    $('playerRole').disabled = true;
+  }
+
+  await loadPlayers();
+}
+
+initPlayers();
 let rallies=JSON.parse(localStorage.getItem('1171_rallies')||'[]');
 function renderRallies(){$('rallyList').innerHTML=rallies.length?rallies.map(x=>`<div class="notice" style="margin:7px 0"><b>${esc(x.name)}</b> · ${esc(x.time)}</div>`).join(''):'Henüz operasyon eklenmedi.'}
 $('addRally').onclick=()=>{let name=$('rallyName').value.trim();if(!name)return;rallies.push({name,time:$('rallyTime').value.trim()});localStorage.setItem('1171_rallies',JSON.stringify(rallies));$('rallyName').value=$('rallyTime').value='';renderRallies();};renderRallies();
