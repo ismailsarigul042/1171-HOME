@@ -19,14 +19,15 @@ export async function onRequest(context) {
     const body = await request.json();
     const name = String(body.name || "").trim();
     const power = String(body.power || "").trim();
+    const role = String(body.role || "").trim();
 
     if (!name) {
       return Response.json({ error: "Oyuncu adı gerekli." }, { status: 400 });
     }
 
     const result = await env.DB.prepare(
-      "INSERT INTO players (name, power) VALUES (?, ?)"
-    ).bind(name, power).run();
+      "INSERT INTO players (name, power, role) VALUES (?, ?, ?)"
+    ).bind(name, power, role).run();
 
     return Response.json({
       success: true,
