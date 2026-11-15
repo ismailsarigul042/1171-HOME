@@ -32,7 +32,7 @@ export async function onRequest(context) {
     return new Response("Site ayarları tamamlanmamış. SITE_PASSWORD ve SESSION_SECRET değişkenlerini tanımlayın.", { status: 500 });
   }
 
-  if (path === "/login.html") return next();
+  if (path === "/login.html" || path === "/login" || path === "/login/") return next();
 
   if (path === "/auth" && request.method === "POST") {
     let body;
@@ -53,5 +53,5 @@ export async function onRequest(context) {
   }
 
   if (await validSession(request, env.SESSION_SECRET)) return next();
-  return Response.redirect(new URL("/login.html", request.url), 302);
+  return Response.redirect(new URL("/login", request.url), 302);
 }
