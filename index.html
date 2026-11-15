@@ -36,16 +36,7 @@ button,input,select{font:inherit}button{cursor:pointer}
 </style>
 </head>
 <body>
-<section class="login-wrap" id="loginScreen">
-  <div class="login">
-    <div class="logo">1171</div><div class="eyebrow">PRIVATE ACCESS</div>
-    <h1>1171 HOME</h1><p>COMMAND CENTER · STRATEGY & MANAGEMENT</p>
-    <form id="loginForm"><input class="field" id="password" type="password" placeholder="Erişim parolası" autocomplete="current-password" required><button class="gold-btn">SİSTEME GİRİŞ YAP&nbsp; →</button></form>
-    <div id="loginError" style="color:#e28b8b;font-size:12px;margin-top:10px"></div>
-    <div class="hint">1171 COMMAND CENTER</div>
-  </div>
-</section>
-<main id="app" class="hidden">
+<main id="app">
 <header class="topbar">
  <div class="brand"><div class="brand-mark">1171</div><div><strong>1171 HOME</strong><small>COMMAND CENTER</small></div></div>
  <div class="top-actions"><span class="status">● SİSTEM HAZIR</span><button class="ghost" id="themeBtn">◐ Tema</button><button class="ghost" id="logoutBtn">⏻ Çıkış</button></div>
@@ -71,11 +62,8 @@ button,input,select{font:inherit}button{cursor:pointer}
 <div class="footer">1171 HOME · COMMAND CENTER · PRIVATE ACCESS</div>
 </main>
 <script>
-const PASS='1171'; const $=id=>document.getElementById(id);
-function enter(){ $('loginScreen').classList.add('hidden');$('app').classList.remove('hidden');}
-$('loginForm').addEventListener('submit',e=>{e.preventDefault();if($('password').value===PASS){sessionStorage.setItem('1171_session','1');$('loginError').textContent='';enter();}else $('loginError').textContent='Parola hatalı. Tekrar deneyin.';});
-if(sessionStorage.getItem('1171_session')==='1')enter();
-$('logoutBtn').onclick=()=>{sessionStorage.removeItem('1171_session');location.reload()};
+const $=id=>document.getElementById(id);
+$('logoutBtn').onclick=()=>{location.href='/logout'};
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showPanel(b.dataset.panel));
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>showPanel(b.dataset.go));
 function showPanel(id){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.panel===id));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));}
