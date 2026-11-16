@@ -456,4 +456,114 @@ $('saveMemo').onclick=()=>{localStorage.setItem('1171_memo',$('memo').value);$('
 $('themeBtn').onclick=()=>{document.body.style.filter=document.body.style.filter?'':'brightness(1.12)';};
 </script>
 </body>
+    
+<script>
+const territoryNames = {
+  "castle-1":"KALE 1",
+  "castle-2":"KALE 2",
+  "castle-3":"KALE 3",
+  "castle-4":"KALE 4",
+  "main-castle":"ANA ŞATO",
+  ...Object.fromEntries(Array.from({length:12},(_,i)=>[`temple-${i+1}`,`TAPINAK ${i+1}`]))
+};
+
+let selectedTerritory = null;
+
+async function loadTerritoryHistory() {
+  const box = document.getElementById("territoryHistory");
+  box.textContent = "Kayıtlar yükleniyor...";
+
+  try {
+    const response = await fetch("/admin-api/territories");
+    if (!response.ok) throw new Error("Kayıtlar alınamadı");
+
+    const records = await response.json();
+    const list = records.filter(x => x.territory_id === selectedTerritory);
+
+    box.innerHTML = list.length ? list.map(x => `
+      <div class="notice">
+        <strong>${escapeTerritory(x.week_label)}</strong><br>
+        Bu hafta hedef: ${escapeTerritory(x.planned_alliance || "-")}<br>
+        Kazanan: ${escapeTerritory(x.winning_alliance || "-")}
+        ${currentRole === "admin" ? `<button class="small-btn" onclick="deleteTerritory(${Number(x.id)})">Sil</button>` : ""}
+      </div>
+    `).join("") : "Henüz kayıt yok.";
+  } catch (error) {
+    box.textContent = "Kayıtlar yüklenemedi.";
+  }
+}
+
+function escapeTerritory(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  }[c]));
+}
+
+document.querySelectorAll("[data-territory-id]").forEach(cell => {
+  cell.addEventListener("click", async () => {
+    selectedTerritory = cell.dataset.territoryId;
+    document.getElementById("territoryTitle").textContent = territoryNames[selectedTerritory];
+    document.getElementById("territoryAdminForm").style.display =
+      currentRole === "admin" ? "block" : "none";
+    document.getElementById("territoryModal").style.display = "flex";
+    await loadTerritoryHistory();
+  });
+});
+
+document.getElementById("closeTerritoryModal").addEventListener("click", () => {
+  document.getElementById("territoryModal").style.display = "none";
+});
+
+document.getElementById("saveTerritory").addEventListener("click", async () => {
+  if (currentRole !== "admin" || !selectedTerritory) return;
+
+  const data = {
+    territory_id: selectedTerritory,
+    territory_name: territoryNames[selectedTerritory],
+    week_label: document.getElementById("territoryWeek").value.trim(),
+    planned_alliance: document.getElementById("plannedAlliance").value.trim(),
+    winning_alliance: document.getElementById("winningAlliance").value.trim()
+  };
+
+  if (!data.week_label) {
+    alert("Hafta bilgisini gir.");
+    return;
+  }
+
+  const response = await fetch("/admin-api/territories", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok) {
+    alert("Kayıt eklenemedi.");
+    return;
+  }
+
+  document.getElementById("territoryWeek").value = "";
+  document.getElementById("plannedAlliance").value = "";
+  document.getElementById("winningAlliance").value = "";
+  await loadTerritoryHistory();
+});
+
+async function deleteTerritory(id) {
+  if (currentRole !== "admin") return;
+  if (!confirm("Bu kaydı silmek istiyor musun?")) return;
+
+  const response = await fetch("/admin-api/territories", {
+    method: "DELETE",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({id})
+  });
+
+  if (!response.ok) {
+    alert("Kayıt silinemedi.");
+    return;
+  }
+
+  await loadTerritoryHistory();
+}
+</script>
+
 </html>
