@@ -108,7 +108,18 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 <section class="panel" id="admin"><div class="grid">
  <article class="card span-6"><div class="card-head"><h3>YÖNETİM ARAÇLARI</h3><span class="tag">ADMIN</span></div><div class="quick"><button data-go="roster">Oyuncu yönetimi<span>Kadro kayıtları</span></button><button data-go="map">Harita modülü<span>Koordinat çalışma alanı</span></button><button data-go="rally">Rally Sync<span>Operasyon senkronu</span></button><button id="exportAdmin">CSV dışa aktar<span>Kadro listesini indir</span></button></div></article>
  <article class="card span-6"><div class="card-head"><h3>YÖNETİM NOTU</h3></div><p class="notice">Bu ilk sürüm arayüz prototipidir. Gerçek çok kullanıcılı yönetim, yetkilendirme ve sunucu veritabanı sonraki kurulum aşamasında eklenecek.</p></article>
- </div></section>
+
+<article class="card span-12">
+  <div class="card-head">
+    <h3>HAFTALIK BÖLGE TAKİP</h3>
+    <button class="small-btn" id="refreshTerritoryOverview">YENİLE</button>
+  </div>
+  <div id="territoryOverview">
+    Bölge kayıtları yükleniyor...
+  </div>
+</article>
+
+</div></section>
 <section class="panel" id="rally"><div class="grid"><article class="card span-8"><div class="card-head"><h3>RALLY SYNC</h3><span class="tag">OPERATIONS</span></div><p style="color:var(--muted)">Ralli / operasyon bilgilerini burada takip edeceğimiz alan.</p><div class="rowform" id="rallyAdminForm" style="display:none">
   <input class="field" id="rallyName" placeholder="Operasyon adı">
   <input class="field" id="rallyTime" placeholder="Saat / not">
