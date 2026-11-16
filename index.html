@@ -434,22 +434,6 @@ $('saveCoord').onclick=()=>{let v=$('coords').value.trim();if(v){let d=document.
 $('rollDice').onclick=()=>{let n=1+Math.floor(Math.random()*6);$('dice').textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][n-1];$('diceResult').textContent='Gelen sayı: '+n;};
 $('saveMemo').onclick=()=>{localStorage.setItem('1171_memo',$('memo').value);$('memoStatus').textContent='Kaydedildi';};$('memo').value=localStorage.getItem('1171_memo')||'';
 $('themeBtn').onclick=()=>{document.body.style.filter=document.body.style.filter?'':'brightness(1.12)';};
- const commandMap = L.map('commandMap').setView([37.8746, 32.4932], 11);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors',
-  maxZoom: 19
-}).addTo(commandMap);
-
-L.marker([37.8746, 32.4932])
-  .addTo(commandMap)
-  .bindPopup('<b>1171 · MERKEZ</b>');
-
-document.querySelectorAll('[data-panel="map"], [data-go="map"]').forEach(button => {
-  button.addEventListener('click', () => {
-    setTimeout(() => commandMap.invalidateSize(), 150);
-  });
-});
 </script>
 </body>
 </html>
