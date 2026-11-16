@@ -164,6 +164,30 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
       </div>
     </article>
   </div>
+    
+<div id="territoryModal" class="territory-modal" style="display:none">
+  <div class="territory-window">
+    <button id="closeTerritoryModal" class="small-btn">Kapat ✕</button>
+    <h3 id="territoryTitle">Bölge Bilgisi</h3>
+
+    <div id="territoryAdminForm" style="display:none">
+      <label>Hafta</label>
+      <input id="territoryWeek" class="field" placeholder="Örn: 16-22 Kasım 2026">
+
+      <label>Bu hafta alacak ittifak</label>
+      <input id="plannedAlliance" class="field" placeholder="İttifak adı">
+
+      <label>Gerçekte alan ittifak</label>
+      <input id="winningAlliance" class="field" placeholder="İttifak adı">
+
+      <button id="saveTerritory" class="small-btn">Kaydı Ekle</button>
+    </div>
+
+    <h4>Haftalık Kayıtlar</h4>
+    <div id="territoryHistory">Kayıtlar yükleniyor...</div>
+  </div>
+</div>
+
 </section>
 
 <section class="panel" id="roster"><div class="grid"><article class="card span-12"><div class="card-head"><h3>BATTLE ROSTER · OYUNCU KADROSU</h3><button class="small-btn" id="exportCsv">⬇ CSV</button></div><div class="rowform"><input class="field" id="playerName" placeholder="Oyuncu adı"><input class="field" id="playerPower" placeholder="Güç / puan"><input class="field" id="playerRole" placeholder="Rol / görev"><button class="small-btn" id="addPlayer">＋ Oyuncu ekle</button></div><div class="table-wrap"><table><thead><tr><th>OYUNCU</th><th>GÜÇ / PUAN</th><th>ROL</th><th>İŞLEM</th></tr></thead><tbody id="rosterBody"><tr><td colspan="4" style="color:#888">Henüz oyuncu eklenmedi.</td></tr></tbody></table></div></article></div></section>
