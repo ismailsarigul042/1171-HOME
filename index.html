@@ -68,7 +68,107 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
   <input class="field" id="rallyTime" placeholder="Saat / not">
   <button class="small-btn" id="addRally">Ekle</button>
 </div><div id="rallyList" style="color:var(--muted);font-size:13px">Henüz operasyon eklenmedi.</div></article><article class="card span-4"><h3>HIZLI NOT</h3><p class="notice">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p></article></div></section>
-<section class="panel" id="map"><div class="grid"><article class="card span-8"><div class="card-head"><h3>1171 HARİTA ALANI</h3><span class="tag">MAP WORKSPACE</span></div><div id="commandMap" class="map"></div><div class="rowform"><input class="field" id="coords" placeholder="Koordinat / konum notu"><button class="small-btn" id="saveCoord">Notu kaydet</button></div><div id="coordList" style="font-size:12px;color:var(--muted)"></div></article><article class="card span-4"><h3>HARİTA ARAÇLARI</h3><p class="notice">Bu sürümde harita çalışma alanı taslak olarak hazır. Gerçek harita katmanı ve koordinat işaretleme sonraki aşamada bağlanacak.</p></article></div></section>
+
+<section class="panel" id="map">
+  <style>
+    .war-board {
+      background: radial-gradient(circle, #34302a, #17191e 75%);
+      border: 1px solid #665638;
+      border-radius: 18px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 760px;
+      margin: 15px auto;
+    }
+    .war-cell {
+      min-height: 90px;
+      border: 1px solid #49433a;
+      border-radius: 12px;
+      background: #22252a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #e8d5a8;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      gap: 5px;
+    }
+    .war-cell .symbol { font-size: 27px; }
+    .war-cell.temple {
+      background: #292a25;
+      border-color: #827047;
+    }
+    .war-cell.castle {
+      background: #302923;
+      border-color: #a47d42;
+    }
+    .war-cell.main-castle {
+      background: linear-gradient(145deg,#76572b,#30251a);
+      border: 2px solid #e5bd69;
+      color: #fff0c5;
+      box-shadow: 0 0 22px #d5a94b55;
+    }
+    .war-cell.empty {
+      background: transparent;
+      border-color: transparent;
+    }
+    @media(max-width:600px) {
+      .war-board { gap: 5px; padding: 8px; }
+      .war-cell { min-height: 65px; font-size: 9px; }
+      .war-cell .symbol { font-size: 21px; }
+    }
+  </style>
+
+  <div class="grid">
+    <article class="card span-12">
+      <div class="card-head">
+        <h3>1171 · KINGSHOT SAVAŞ HARİTASI</h3>
+        <span class="tag">WAR ZONE</span>
+      </div>
+
+      <div class="war-board">
+        <div class="war-cell castle"><span class="symbol">🏰</span>KALE 1</div>
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 1</div>
+        <div class="war-cell empty"></div>
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 2</div>
+        <div class="war-cell castle"><span class="symbol">🏰</span>KALE 2</div>
+
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 3</div>
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 4</div>
+        <div class="war-cell empty"></div>
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 5</div>
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 6</div>
+
+        <div class="war-cell empty"></div>
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 7</div>
+        <div class="war-cell main-castle"><span class="symbol">👑</span>ANA ŞATO<br>1171</div>
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 8</div>
+        <div class="war-cell empty"></div>
+
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 9</div>
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 10</div>
+        <div class="war-cell empty"></div>
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 11</div>
+        <div class="war-cell temple"><span class="symbol">⛩️</span>TAPINAK 12</div>
+
+        <div class="war-cell castle"><span class="symbol">🏰</span>KALE 3</div>
+        <div class="war-cell empty"></div>
+        <div class="war-cell empty"></div>
+        <div class="war-cell empty"></div>
+        <div class="war-cell castle"><span class="symbol">🏰</span>KALE 4</div>
+      </div>
+
+      <div class="notice">
+        ANA ŞATO merkezdir. 12 tapınak ve 4 kale çevresinde savaş düzeni oluşturulur.
+      </div>
+    </article>
+  </div>
+</section>
+
 <section class="panel" id="roster"><div class="grid"><article class="card span-12"><div class="card-head"><h3>BATTLE ROSTER · OYUNCU KADROSU</h3><button class="small-btn" id="exportCsv">⬇ CSV</button></div><div class="rowform"><input class="field" id="playerName" placeholder="Oyuncu adı"><input class="field" id="playerPower" placeholder="Güç / puan"><input class="field" id="playerRole" placeholder="Rol / görev"><button class="small-btn" id="addPlayer">＋ Oyuncu ekle</button></div><div class="table-wrap"><table><thead><tr><th>OYUNCU</th><th>GÜÇ / PUAN</th><th>ROL</th><th>İŞLEM</th></tr></thead><tbody id="rosterBody"><tr><td colspan="4" style="color:#888">Henüz oyuncu eklenmedi.</td></tr></tbody></table></div></article></div></section>
 <section class="panel" id="fun"><div class="grid"><article class="card span-6"><div class="card-head"><h3>ŞANSINI DENE</h3><span class="tag">FUN</span></div><div style="font-size:52px;text-align:center;padding:18px" id="dice">🎲</div><button class="gold-btn" id="rollDice">ZAR AT</button><p id="diceResult" style="text-align:center;color:var(--muted)"></p></article><article class="card span-6"><div class="card-head"><h3>ŞİFRELİ NOT DEFTERİ</h3></div><textarea id="memo" class="field" rows="5" placeholder="Bu tarayıcıda saklanacak notunu yaz..." style="resize:vertical"></textarea><button class="small-btn" id="saveMemo" style="margin-top:8px">Notu kaydet</button><span id="memoStatus" style="color:var(--green);font-size:12px;margin-left:8px"></span></article></div></section>
 <div class="footer">1171 HOME · COMMAND CENTER · PRIVATE ACCESS</div>
