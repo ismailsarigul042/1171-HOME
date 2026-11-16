@@ -564,6 +564,41 @@ async function deleteTerritory(id) {
 
   await loadTerritoryHistory();
 }
+    
+async function refreshTerritoryLabels() {
+  try {
+    const response = await fetch("/admin-api/territories");
+    if (!response.ok) return;
+
+    const records = await response.json();
+
+    document.querySelectorAll("[data-territory-id]").forEach(cell => {
+      const id = cell.dataset.territoryId;
+      const latest = records.find(x =>
+        x.territory_id === id && x.planned_alliance
+      );
+
+      let label = cell.querySelector(".territory-plan-label");
+
+      if (!label) {
+        label = document.createElement("span");
+        label.className = "territory-plan-label";
+        label.style.cssText =
+          "font-size:9px;color:#f3ce7b;margin-top:4px;overflow-wrap:anywhere";
+        cell.appendChild(label);
+      }
+
+      label.textContent = latest
+        ? "HEDEF: " + latest.planned_alliance
+        : "";
+    });
+  } catch (error) {
+    console.error("İttifak etiketleri yüklenemedi:", error);
+  }
+}
+
+refreshTerritoryLabels();
+
 </script>
 
 </html>
