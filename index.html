@@ -56,7 +56,11 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
  <article class="card span-6"><div class="card-head"><h3>YÖNETİM ARAÇLARI</h3><span class="tag">ADMIN</span></div><div class="quick"><button data-go="roster">Oyuncu yönetimi<span>Kadro kayıtları</span></button><button data-go="map">Harita modülü<span>Koordinat çalışma alanı</span></button><button data-go="rally">Rally Sync<span>Operasyon senkronu</span></button><button id="exportAdmin">CSV dışa aktar<span>Kadro listesini indir</span></button></div></article>
  <article class="card span-6"><div class="card-head"><h3>YÖNETİM NOTU</h3></div><p class="notice">Bu ilk sürüm arayüz prototipidir. Gerçek çok kullanıcılı yönetim, yetkilendirme ve sunucu veritabanı sonraki kurulum aşamasında eklenecek.</p></article>
  </div></section>
-<section class="panel" id="rally"><div class="grid"><article class="card span-8"><div class="card-head"><h3>RALLY SYNC</h3><span class="tag">OPERATIONS</span></div><p style="color:var(--muted)">Ralli / operasyon bilgilerini burada takip edeceğimiz alan.</p><div class="rowform"><input class="field" id="rallyName" placeholder="Operasyon adı"><input class="field" id="rallyTime" placeholder="Saat / not"><button class="small-btn" id="addRally">Ekle</button></div><div id="rallyList" style="color:var(--muted);font-size:13px">Henüz operasyon eklenmedi.</div></article><article class="card span-4"><h3>HIZLI NOT</h3><p class="notice">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p></article></div></section>
+<section class="panel" id="rally"><div class="grid"><article class="card span-8"><div class="card-head"><h3>RALLY SYNC</h3><span class="tag">OPERATIONS</span></div><p style="color:var(--muted)">Ralli / operasyon bilgilerini burada takip edeceğimiz alan.</p><div class="rowform" id="rallyAdminForm" style="display:none">
+  <input class="field" id="rallyName" placeholder="Operasyon adı">
+  <input class="field" id="rallyTime" placeholder="Saat / not">
+  <button class="small-btn" id="addRally">Ekle</button>
+</div><div id="rallyList" style="color:var(--muted);font-size:13px">Henüz operasyon eklenmedi.</div></article><article class="card span-4"><h3>HIZLI NOT</h3><p class="notice">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p></article></div></section>
 <section class="panel" id="map"><div class="grid"><article class="card span-8"><div class="card-head"><h3>1171 HARİTA ALANI</h3><span class="tag">MAP WORKSPACE</span></div><div class="map"><span class="pin">1171 · MERKEZ</span></div><div class="rowform"><input class="field" id="coords" placeholder="Koordinat / konum notu"><button class="small-btn" id="saveCoord">Notu kaydet</button></div><div id="coordList" style="font-size:12px;color:var(--muted)"></div></article><article class="card span-4"><h3>HARİTA ARAÇLARI</h3><p class="notice">Bu sürümde harita çalışma alanı taslak olarak hazır. Gerçek harita katmanı ve koordinat işaretleme sonraki aşamada bağlanacak.</p></article></div></section>
 <section class="panel" id="roster"><div class="grid"><article class="card span-12"><div class="card-head"><h3>BATTLE ROSTER · OYUNCU KADROSU</h3><button class="small-btn" id="exportCsv">⬇ CSV</button></div><div class="rowform"><input class="field" id="playerName" placeholder="Oyuncu adı"><input class="field" id="playerPower" placeholder="Güç / puan"><input class="field" id="playerRole" placeholder="Rol / görev"><button class="small-btn" id="addPlayer">＋ Oyuncu ekle</button></div><div class="table-wrap"><table><thead><tr><th>OYUNCU</th><th>GÜÇ / PUAN</th><th>ROL</th><th>İŞLEM</th></tr></thead><tbody id="rosterBody"><tr><td colspan="4" style="color:#888">Henüz oyuncu eklenmedi.</td></tr></tbody></table></div></article></div></section>
 <section class="panel" id="fun"><div class="grid"><article class="card span-6"><div class="card-head"><h3>ŞANSINI DENE</h3><span class="tag">FUN</span></div><div style="font-size:52px;text-align:center;padding:18px" id="dice">🎲</div><button class="gold-btn" id="rollDice">ZAR AT</button><p id="diceResult" style="text-align:center;color:var(--muted)"></p></article><article class="card span-6"><div class="card-head"><h3>ŞİFRELİ NOT DEFTERİ</h3></div><textarea id="memo" class="field" rows="5" placeholder="Bu tarayıcıda saklanacak notunu yaz..." style="resize:vertical"></textarea><button class="small-btn" id="saveMemo" style="margin-top:8px">Notu kaydet</button><span id="memoStatus" style="color:var(--green);font-size:12px;margin-left:8px"></span></article></div></section>
@@ -307,11 +311,12 @@ window.removeRally = async id => {
 async function initRallies() {
   await checkUserRole();
 
-  if (currentRole !== 'admin') {
-    $('addRally').style.display = 'none';
-    $('rallyName').disabled = true;
-    $('rallyTime').disabled = true;
-   $('addRally').disabled = true;
+  const rallyForm = $('rallyAdminForm');
+
+  if (currentRole === 'admin') {
+    rallyForm.style.display = '';
+  } else {
+    rallyForm.style.display = 'none';
   }
 
   await loadRallies();
