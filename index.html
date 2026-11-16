@@ -96,8 +96,11 @@ function showPanel(id){
   if(id==="admin" && currentRole!=="admin") return;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.panel===id));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));}
 let players = [];
 
+
 function renderPlayers() {
   $('memberCount').textContent = players.length;
+
+  const isAdmin = currentRole === 'admin';
 
   $('rosterBody').innerHTML = players.length
     ? players.map(p => `
@@ -105,14 +108,17 @@ function renderPlayers() {
         <td>${esc(p.name)}</td>
         <td>${esc(p.power || '')}</td>
         <td>${esc(p.role || '')}</td>
-        <td>${currentRole === 'admin'
-          ? `<button class="small-btn" onclick="removePlayer(${p.id})">Sil</button>`
-          : ''
-        }</td>
+        <td>
+          ${isAdmin
+            ? `<button class="small-btn" onclick="removePlayer(${Number(p.id)})">Sil</button>`
+            : ''
+          }
+        </td>
       </tr>
     `).join('')
     : '<tr><td colspan="4" style="color:#888">Henüz oyuncu eklenmedi.</td></tr>';
 }
+
 
 async function loadPlayers() {
   try {
