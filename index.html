@@ -27,7 +27,10 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 .rowform{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.rowform .field{flex:1;min-width:130px}.small-btn{background:#26282f;border:1px solid #414650;color:#eee;border-radius:9px;padding:9px 13px;transition:.2s}
 .gold-btn{background:linear-gradient(135deg,#f2dfa9,#b88d3e);color:#17130b;border:0;border-radius:10px;padding:12px 18px;font-weight:900;width:100%;margin-top:12px;box-shadow:0 7px 20px #b88d3e20}.gold-btn:hover{filter:brightness(1.08)}
 .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #2b2e36;white-space:nowrap}th{color:var(--muted);font-size:9px;letter-spacing:1.4px}
-.map{height:310px;border-radius:14px;border:1px solid #343740;background-color:#171b20;background-image:linear-gradient(#30353b55 1px,transparent 1px),linear-gradient(90deg,#30353b55 1px,transparent 1px);background-size:34px 34px;position:relative;overflow:hidden}.map:before,.map:after{content:"";position:absolute;background:#6a624e66;height:2px;width:140%;top:48%;left:-10%;transform:rotate(-18deg)}.map:after{transform:rotate(31deg);top:60%;background:#4e657166}.pin{position:absolute;left:52%;top:42%;background:var(--gold);color:#17130b;border-radius:20px;padding:6px 11px;font-size:11px;font-weight:900;box-shadow:0 0 22px #d8b66a88}
+.map{height:310px;border-radius:14px;border:1px solid #343740;background-color:#171b20;background-image:linear-gradient(#30353b55 1px,transparent 1px),linear-gradient(90deg,#30353b55 1px,transparent 1px);background-size:34px 34px;position:relative;overflow:hidden}.map:before,.map:after{content:"";position:absolute;background:#6a624e66;height:2px;width:140%;top:48%;left:-10%;transform:rotate(-18deg)}.map:after{transform:rotate(31deg);top:60%;background:#4e657166}#commandMap:before,
+#commandMap:after {
+  display: none;
+}.pin{position:absolute;left:52%;top:42%;background:var(--gold);color:#17130b;border-radius:20px;padding:6px 11px;font-size:11px;font-weight:900;box-shadow:0 0 22px #d8b66a88}
 .notice{color:#b8bbc3;font-size:12px;background:#111318;border-radius:11px;padding:13px;border-left:2px solid var(--gold)}
 .panel{display:none}.panel.active{display:block;animation:fadeIn .25s ease}@keyframes fadeIn{from{opacity:.4;transform:translateY(5px)}to{opacity:1;transform:none}}
 .footer{text-align:center;color:#666b75;font-size:9px;letter-spacing:2.2px;padding:28px 0 8px}
@@ -35,6 +38,10 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 @media(max-width:700px){#app{padding:12px}.tabs{position:static;width:auto;flex-direction:row;overflow:auto;margin:12px 0 18px;padding:8px;border-radius:13px}.tabs:before{display:none}.tab{width:auto;flex:0 0 auto;padding:10px 12px}.topbar{align-items:flex-start}.top-actions{flex-wrap:wrap;justify-content:flex-end}.hero{padding:25px 3px 18px}.stat-row{grid-template-columns:repeat(3,1fr)}.card{padding:16px}}
 @media(max-width:430px){.brand strong{font-size:14px}.brand small{font-size:8px}.brand-mark{width:40px;height:40px}.status{display:none}.top-actions{gap:5px}.ghost{padding:8px}.stat{padding:9px}.stat b{font-size:19px}.quick{grid-template-columns:1fr 1fr}.tab{font-size:12px}}
 </style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 </head>
 <body>
 <main id="app">
@@ -61,7 +68,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
   <input class="field" id="rallyTime" placeholder="Saat / not">
   <button class="small-btn" id="addRally">Ekle</button>
 </div><div id="rallyList" style="color:var(--muted);font-size:13px">Henüz operasyon eklenmedi.</div></article><article class="card span-4"><h3>HIZLI NOT</h3><p class="notice">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p></article></div></section>
-<section class="panel" id="map"><div class="grid"><article class="card span-8"><div class="card-head"><h3>1171 HARİTA ALANI</h3><span class="tag">MAP WORKSPACE</span></div><div class="map"><span class="pin">1171 · MERKEZ</span></div><div class="rowform"><input class="field" id="coords" placeholder="Koordinat / konum notu"><button class="small-btn" id="saveCoord">Notu kaydet</button></div><div id="coordList" style="font-size:12px;color:var(--muted)"></div></article><article class="card span-4"><h3>HARİTA ARAÇLARI</h3><p class="notice">Bu sürümde harita çalışma alanı taslak olarak hazır. Gerçek harita katmanı ve koordinat işaretleme sonraki aşamada bağlanacak.</p></article></div></section>
+<section class="panel" id="map"><div class="grid"><article class="card span-8"><div class="card-head"><h3>1171 HARİTA ALANI</h3><span class="tag">MAP WORKSPACE</span></div><div id="commandMap" class="map"></div><div class="rowform"><input class="field" id="coords" placeholder="Koordinat / konum notu"><button class="small-btn" id="saveCoord">Notu kaydet</button></div><div id="coordList" style="font-size:12px;color:var(--muted)"></div></article><article class="card span-4"><h3>HARİTA ARAÇLARI</h3><p class="notice">Bu sürümde harita çalışma alanı taslak olarak hazır. Gerçek harita katmanı ve koordinat işaretleme sonraki aşamada bağlanacak.</p></article></div></section>
 <section class="panel" id="roster"><div class="grid"><article class="card span-12"><div class="card-head"><h3>BATTLE ROSTER · OYUNCU KADROSU</h3><button class="small-btn" id="exportCsv">⬇ CSV</button></div><div class="rowform"><input class="field" id="playerName" placeholder="Oyuncu adı"><input class="field" id="playerPower" placeholder="Güç / puan"><input class="field" id="playerRole" placeholder="Rol / görev"><button class="small-btn" id="addPlayer">＋ Oyuncu ekle</button></div><div class="table-wrap"><table><thead><tr><th>OYUNCU</th><th>GÜÇ / PUAN</th><th>ROL</th><th>İŞLEM</th></tr></thead><tbody id="rosterBody"><tr><td colspan="4" style="color:#888">Henüz oyuncu eklenmedi.</td></tr></tbody></table></div></article></div></section>
 <section class="panel" id="fun"><div class="grid"><article class="card span-6"><div class="card-head"><h3>ŞANSINI DENE</h3><span class="tag">FUN</span></div><div style="font-size:52px;text-align:center;padding:18px" id="dice">🎲</div><button class="gold-btn" id="rollDice">ZAR AT</button><p id="diceResult" style="text-align:center;color:var(--muted)"></p></article><article class="card span-6"><div class="card-head"><h3>ŞİFRELİ NOT DEFTERİ</h3></div><textarea id="memo" class="field" rows="5" placeholder="Bu tarayıcıda saklanacak notunu yaz..." style="resize:vertical"></textarea><button class="small-btn" id="saveMemo" style="margin-top:8px">Notu kaydet</button><span id="memoStatus" style="color:var(--green);font-size:12px;margin-left:8px"></span></article></div></section>
 <div class="footer">1171 HOME · COMMAND CENTER · PRIVATE ACCESS</div>
@@ -327,6 +334,22 @@ $('saveCoord').onclick=()=>{let v=$('coords').value.trim();if(v){let d=document.
 $('rollDice').onclick=()=>{let n=1+Math.floor(Math.random()*6);$('dice').textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][n-1];$('diceResult').textContent='Gelen sayı: '+n;};
 $('saveMemo').onclick=()=>{localStorage.setItem('1171_memo',$('memo').value);$('memoStatus').textContent='Kaydedildi';};$('memo').value=localStorage.getItem('1171_memo')||'';
 $('themeBtn').onclick=()=>{document.body.style.filter=document.body.style.filter?'':'brightness(1.12)';};
+ const commandMap = L.map('commandMap').setView([37.8746, 32.4932], 11);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+  maxZoom: 19
+}).addTo(commandMap);
+
+L.marker([37.8746, 32.4932])
+  .addTo(commandMap)
+  .bindPopup('<b>1171 · MERKEZ</b>');
+
+document.querySelectorAll('[data-panel="map"], [data-go="map"]').forEach(button => {
+  button.addEventListener('click', () => {
+    setTimeout(() => commandMap.invalidateSize(), 150);
+  });
+});
 </script>
 </body>
 </html>
