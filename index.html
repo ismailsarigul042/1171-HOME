@@ -466,8 +466,56 @@ $('rollDice').onclick=()=>{let n=1+Math.floor(Math.random()*6);$('dice').textCon
 $('saveMemo').onclick=()=>{localStorage.setItem('1171_memo',$('memo').value);$('memoStatus').textContent='Kaydedildi';};$('memo').value=localStorage.getItem('1171_memo')||'';
 $('themeBtn').onclick=()=>{document.body.style.filter=document.body.style.filter?'':'brightness(1.12)';};
 </script>
-</body>
+</body> 
     
+async function loadTerritoryOverview() {
+  const box = document.getElementById("territoryOverview");
+  if (!box) return;
+
+  box.textContent = "Bölgeler yükleniyor...";
+
+  try {
+    const response = await fetch("/admin-api/territories");
+    if (!response.ok) throw new Error();
+
+    const records = await response.json();
+    const latest = {};
+
+    records.sort((a, b) => b.id - a.id).forEach(record => {
+      if (!latest[record.territory_id]) {
+        latest[record.territory_id] = record;
+      }
+    });
+
+    const names = {
+      "main-castle": "ANA ŞATO",
+      ...Object.fromEntries(Array.from({length:4},(_,i)=>[`castle-${i+1}`,`KALE ${i+1}`])),
+      ...Object.fromEntries(Array.from({length:12},(_,i)=>[`temple-${i+1}`,`TAPINAK ${i+1}`]))
+    };
+
+    box.innerHTML = Object.entries(names).map(([id,name]) => {
+      const record = latest[id];
+
+      return `
+        <div class="notice" style="margin-bottom:8px">
+          <strong>${name}</strong><br>
+          Hafta: ${record ? esc(record.week_label) : "-"}<br>
+          Hedef ittifak: ${record ? esc(record.planned_alliance || "-") : "-"}<br>
+          Kazanan: ${record ? esc(record.winning_alliance || "-") : "-"}
+        </div>
+      `;
+    }).join("");
+
+  } catch (error) {
+    box.textContent = "Bölge kayıtları yüklenemedi.";
+  }
+}
+
+document.getElementById("refreshTerritoryOverview")
+  ?.addEventListener("click", loadTerritoryOverview);
+
+loadTerritoryOverview();
+
 <script>
 const territoryNames = {
   "castle-1":"KALE 1",
@@ -541,7 +589,7 @@ document.querySelectorAll("[data-territory-id]").forEach(cell => {
     await loadTerritoryHistory();
   });
 });
-
+</script>
 document.getElementById("closeTerritoryModal").addEventListener("click", () => {
   document.getElementById("territoryModal").style.display = "none";
 });
