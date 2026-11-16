@@ -6,6 +6,56 @@
 <meta name="theme-color" content="#101114">
 <title>1171 HOME | Command Center</title>
 <style>
+    .war-board {
+      background: radial-gradient(circle, #34302a, #17191e 75%);
+      border: 1px solid #665638;
+      border-radius: 18px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 760px;
+      margin: 15px auto;
+    }
+    .war-cell {
+      min-height: 90px;
+      border: 1px solid #49433a;
+      border-radius: 12px;
+      background: #22252a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #e8d5a8;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      gap: 5px;
+    }
+    .war-cell .symbol { font-size: 27px; }
+    .war-cell.temple {
+      background: #292a25;
+      border-color: #827047;
+    }
+    .war-cell.castle {
+      background: #302923;
+      border-color: #a47d42;
+    }
+    .war-cell.main-castle {
+      background: linear-gradient(145deg,#76572b,#30251a);
+      border: 2px solid #e5bd69;
+      color: #fff0c5;
+      box-shadow: 0 0 22px #d5a94b55;
+    }
+    .war-cell.empty {
+      background: transparent;
+      border-color: transparent;
+    }
+    @media(max-width:600px) {
+      .war-board { gap: 5px; padding: 8px; }
+      .war-cell { min-height: 65px; font-size: 9px; }
+      .war-cell .symbol { font-size: 21px; }
+    }
 :root{--bg:#0b0c0f;--panel:#14161b;--panel2:#1b1e25;--line:#2b2f38;--gold:#d8b66a;--gold2:#f2dfa9;--text:#f3f1eb;--muted:#9da2ad;--red:#a94b4b;--green:#78bd96}
 *{box-sizing:border-box}
 body{margin:0;background:radial-gradient(ellipse at 65% -18%,#393226 0,#17181d 35%,var(--bg) 78%);color:var(--text);font:15px/1.55 Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
@@ -66,58 +116,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 </div><div id="rallyList" style="color:var(--muted);font-size:13px">Henüz operasyon eklenmedi.</div></article><article class="card span-4"><h3>HIZLI NOT</h3><p class="notice">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p></article></div></section>
 
 <section class="panel" id="map">
-  <style>
-    .war-board {
-      background: radial-gradient(circle, #34302a, #17191e 75%);
-      border: 1px solid #665638;
-      border-radius: 18px;
-      padding: 18px;
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 10px;
-      max-width: 760px;
-      margin: 15px auto;
-    }
-    .war-cell {
-      min-height: 90px;
-      border: 1px solid #49433a;
-      border-radius: 12px;
-      background: #22252a;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #e8d5a8;
-      font-size: 11px;
-      font-weight: 800;
-      text-align: center;
-      gap: 5px;
-    }
-    .war-cell .symbol { font-size: 27px; }
-    .war-cell.temple {
-      background: #292a25;
-      border-color: #827047;
-    }
-    .war-cell.castle {
-      background: #302923;
-      border-color: #a47d42;
-    }
-    .war-cell.main-castle {
-      background: linear-gradient(145deg,#76572b,#30251a);
-      border: 2px solid #e5bd69;
-      color: #fff0c5;
-      box-shadow: 0 0 22px #d5a94b55;
-    }
-    .war-cell.empty {
-      background: transparent;
-      border-color: transparent;
-    }
-    @media(max-width:600px) {
-      .war-board { gap: 5px; padding: 8px; }
-      .war-cell { min-height: 65px; font-size: 9px; }
-      .war-cell .symbol { font-size: 21px; }
-    }
-  </style>
+ 
 
   <div class="grid">
     <article class="card span-12">
