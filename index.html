@@ -230,9 +230,93 @@ async function initPlayers() {
 }
 
 initPlayers();
-let rallies=JSON.parse(localStorage.getItem('1171_rallies')||'[]');
-function renderRallies(){$('rallyList').innerHTML=rallies.length?rallies.map(x=>`<div class="notice" style="margin:7px 0"><b>${esc(x.name)}</b> · ${esc(x.time)}</div>`).join(''):'Henüz operasyon eklenmedi.'}
-$('addRally').onclick=()=>{let name=$('rallyName').value.trim();if(!name)return;rallies.push({name,time:$('rallyTime').value.trim()});localStorage.setItem('1171_rallies',JSON.stringify(rallies));$('rallyName').value=$('rallyTime').value='';renderRallies();};renderRallies();
+
+let rallies = [];
+
+function renderRallies() {
+  $('rallyList').innerHTML = rallies.length
+    ? rallies.map(x => `
+      <div class="notice" style="margin:7px 0">
+        <b>${esc(x.title)}</b> · ${esc(x.details || '')}
+        ${currentRole === 'admin'
+          ? `<button class="small-btn" onclick="removeRally(${Number(x.id)})">Sil</button>`
+          : ''
+        }
+      </div>
+    `).join('')
+    : 'Henüz operasyon eklenmedi.';
+}
+
+async function loadRallies() {
+  try {
+    const response = await fetch('/admin-api/rallies', {
+      cache: 'no-store'
+    });
+
+    if (!response.ok) throw new Error('Operasyonlar yüklenemedi.');
+
+    rallies = await response.json();
+    renderRallies();
+  } catch (error) {
+    $('rallyList').textContent = 'Operasyonlar yüklenemedi. Sayfayı yenileyin.';
+  }
+}
+
+$('addRally').onclick = async () => {
+  if (currentRole !== 'admin') return;
+
+  const title = $('rallyName').value.trim();
+  const details = $('rallyTime').value.trim();
+
+  if (!title) return;
+
+  const response = await fetch('/admin-api/rallies', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, details })
+  });
+
+  if (!response.ok) {
+    alert('Operasyon eklenemedi.');
+    return;
+  }
+
+  $('rallyName').value = '';
+  $('rallyTime').value = '';
+
+  await loadRallies();
+};
+
+window.removeRally = async id => {
+  if (currentRole !== 'admin') return;
+
+  const response = await fetch('/admin-api/rallies', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id })
+  });
+
+  if (!response.ok) {
+    alert('Operasyon silinemedi.');
+    return;
+  }
+
+  await loadRallies();
+};
+
+async function initRallies() {
+  await checkUserRole();
+
+  if (currentRole !== 'admin') {
+    $('addRally').style.display = 'none';
+    $('rallyName').disabled = true;
+    $('rallyTime').disabled = true;
+  }
+
+  await loadRallies();
+}
+
+initRallies();
 $('saveCoord').onclick=()=>{let v=$('coords').value.trim();if(v){let d=document.createElement('div');d.textContent='⌖ '+v;$('coordList').appendChild(d);$('coords').value='';}};
 $('rollDice').onclick=()=>{let n=1+Math.floor(Math.random()*6);$('dice').textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][n-1];$('diceResult').textContent='Gelen sayı: '+n;};
 $('saveMemo').onclick=()=>{localStorage.setItem('1171_memo',$('memo').value);$('memoStatus').textContent='Kaydedildi';};$('memo').value=localStorage.getItem('1171_memo')||'';
