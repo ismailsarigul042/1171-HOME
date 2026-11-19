@@ -445,7 +445,7 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
     <h3>REFLEKS</h3>
     <p>Hızını test et!</p>
   </div>
-  <button onclick="comingSoon()">YAKINDA</button>
+<button onclick="openReflex()">OYNA</button>
 </article>
 
 <article class="game rps">
@@ -546,6 +546,26 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
   <div class="controls">
     <button onclick="startMemory()">YENİ OYUN</button>
     <button onclick="closeMemory()">OYUNLARA DÖN</button>
+  </div>
+</section>
+  <section id="reflexScreen" style="display:none;text-align:center">
+  <h2 style="color:#f5cb55">⚡ REFLEKS ARENA</h2>
+  <p>Yeşil alan belirdiğinde hemen tıkla!</p>
+
+  <h3 id="reflexStatus">Hazır mısın?</h3>
+  <h2>TEPKİ SÜRESİ: <span id="reflexTime">-</span></h2>
+  <h3>PUAN: <span id="reflexScore">0</span></h3>
+
+  <button id="reflexTarget" onclick="reflexClick()"
+    style="width:220px;height:160px;background:#292632;
+    border:2px solid #a9873b;border-radius:15px;
+    color:white;font-size:22px;margin:20px auto">
+    BAŞLAT
+  </button>
+
+  <div class="controls">
+    <button onclick="startReflex()">YENİDEN OYNA</button>
+    <button onclick="closeReflex()">OYUNLARA DÖN</button>
   </div>
 </section>
 
@@ -1301,6 +1321,113 @@ async function memoryFinish() {
     }
   } catch (error) {
     console.error("Hafıza oyunu puanı gönderilemedi:", error);
+  }
+}
+  let reflexTimer = null;
+let reflexStartTime = 0;
+let reflexState = "idle";
+let reflexScoreValue = 0;
+
+function openReflex() {
+  document.getElementById("gameScreen").style.display = "none";
+  document.getElementById("xoxScreen").style.display = "none";
+  document.getElementById("minesScreen").style.display = "none";
+  document.getElementById("memoryScreen").style.display = "none";
+  document.getElementById("reflexScreen").style.display = "block";
+
+  document.getElementById("reflexScreen").scrollIntoView({
+    behavior: "smooth"
+  });
+
+  startReflex();
+}
+
+function closeReflex() {
+  clearTimeout(reflexTimer);
+  reflexState = "idle";
+  document.getElementById("reflexScreen").style.display = "none";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function startReflex() {
+  clearTimeout(reflexTimer);
+  reflexState = "waiting";
+  reflexScoreValue = 0;
+
+  document.getElementById("reflexTime").textContent = "-";
+  document.getElementById("reflexScore").textContent = "0";
+  document.getElementById("reflexStatus").textContent =
+    "Hazır ol! Yeşil alanı bekle...";
+
+  const target = document.getElementById("reflexTarget");
+  target.style.background = "#292632";
+  target.style.borderColor = "#a9873b";
+  target.textContent = "BEKLE...";
+
+  reflexTimer = setTimeout(() => {
+    if (reflexState !== "waiting") return;
+
+    reflexState = "ready";
+    reflexStartTime = performance.now();
+
+    target.style.background = "#168344";
+    target.style.borderColor = "#70d68a";
+    target.textContent = "ŞİMDİ TIKLA!";
+    document.getElementById("reflexStatus").textContent =
+      "TIKLA! TIKLA! TIKLA!";
+  }, 1500 + Math.random() * 3000);
+}
+
+async function reflexClick() {
+  const target = document.getElementById("reflexTarget");
+
+  if (reflexState === "idle") return;
+
+  if (reflexState === "waiting") {
+    clearTimeout(reflexTimer);
+    reflexState = "idle";
+    target.style.background = "#8b2929";
+    target.textContent = "ERKEN TIKLADIN!";
+    document.getElementById("reflexStatus").textContent =
+      "Biraz sabretmeliydin! Yeniden dene.";
+    return;
+  }
+
+  if (reflexState !== "ready") return;
+
+  const reaction = Math.round(performance.now() - reflexStartTime);
+  reflexState = "idle";
+
+  reflexScoreValue = Math.max(0, Math.min(100, 100 - Math.floor(reaction / 5)));
+
+  document.getElementById("reflexTime").textContent = reaction + " ms";
+  document.getElementById("reflexScore").textContent = reflexScoreValue;
+  document.getElementById("reflexStatus").textContent =
+    reaction < 250 ? "⚡ ŞİMŞEK GİBİ!" :
+    reaction < 400 ? "👏 ÇOK İYİ!" :
+    "Biraz daha hızlanabilirsin!";
+
+  target.style.background = "#292632";
+  target.style.borderColor = "#a9873b";
+  target.textContent = "SONUÇ";
+
+  if (!currentPlayer) return;
+
+  try {
+    const response = await fetch("/api/scores", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        game: "reflex",
+        score: reflexScoreValue
+      })
+    });
+
+    if (response.ok) {
+      await loadRankings();
+    }
+  } catch (error) {
+    console.error("Refleks puanı gönderilemedi:", error);
   }
 }
 function stopSnake() {
