@@ -913,12 +913,20 @@ refreshTerritoryLabels();
           "Haftalık puanın: " + (data.myScore ?? 0);
       }
 
-    } catch (error) {
-      $a("arenaPlayerRanking").textContent = "Sıralama yüklenemedi.";
-      $a("arenaAllianceRanking").textContent = "Sıralama yüklenemedi.";
-      console.error(error);
-    }
+   } catch (error) {
+  const playerRanking = $a("arenaPlayerRanking");
+  const allianceRanking = $a("arenaAllianceRanking");
+
+  if (playerRanking) {
+    playerRanking.textContent = "Sıralama yüklenemedi.";
   }
+
+  if (allianceRanking) {
+    allianceRanking.textContent = "Sıralama yüklenemedi.";
+  }
+
+  console.error(error);
+}
 
   async function arenaSaveScore(game, score) {
     if (!arenaPlayer) {
