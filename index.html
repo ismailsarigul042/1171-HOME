@@ -1074,12 +1074,18 @@ const cells = canvas ? canvas.width / size : 0;
 }
 if ($a("arenaSnakeDown")) {
   $a("arenaSnakeDown").addEventListener("click", () => snakeTurn("down"));
-}
+}if ($a("arenaSnakeLeft")) {
   $a("arenaSnakeLeft").addEventListener("click", () => snakeTurn("left"));
+}
+if ($a("arenaSnakeRight")) {
   $a("arenaSnakeRight").addEventListener("click", () => snakeTurn("right"));
+}
+
+if ($a("arenaSnakeSelect") && $a("arenaSnakeGame")) {
   $a("arenaSnakeSelect").addEventListener("click", () => {
     $a("arenaSnakeGame").scrollIntoView({ behavior: "smooth" });
   });
+}
 
   document.addEventListener("keydown", event => {
     const keys = {
