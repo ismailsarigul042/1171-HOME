@@ -1072,7 +1072,9 @@ const cells = canvas ? canvas.width / size : 0;
   if ($a("arenaSnakeUp")) {
   $a("arenaSnakeUp").addEventListener("click", () => snakeTurn("up"));
 }
+if ($a("arenaSnakeDown")) {
   $a("arenaSnakeDown").addEventListener("click", () => snakeTurn("down"));
+}
   $a("arenaSnakeLeft").addEventListener("click", () => snakeTurn("left"));
   $a("arenaSnakeRight").addEventListener("click", () => snakeTurn("right"));
   $a("arenaSnakeSelect").addEventListener("click", () => {
