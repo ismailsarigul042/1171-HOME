@@ -466,7 +466,7 @@ async function loadPlayer() {
     currentPlayer = data.player;
 
     document.getElementById("playerName").textContent =
-      currentPlayer.name;
+  "[" + currentPlayer.alliance + "] " + currentPlayer.name;
 
     document.getElementById("playerAlliance").textContent =
       currentPlayer.alliance;
