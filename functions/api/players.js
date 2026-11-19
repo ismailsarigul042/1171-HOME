@@ -189,9 +189,10 @@ export async function onRequestPost({ request, env }) {
       { "Set-Cookie": cookie }
     );
 
-  } catch (error) {
-    return json({ error: "İşlem sırasında bir hata oluştu." }, 500);
-  }
+} catch (error) {
+  console.error("OYUNCU KAYIT HATASI:", error);
+  return json({ error: "İşlem sırasında bir hata oluştu." }, 500);
+}
 }
 
 export async function onRequestDelete({ request }) {
