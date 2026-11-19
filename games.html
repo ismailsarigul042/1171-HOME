@@ -306,6 +306,7 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
 .mines-board button.mine {
   background: #8b2929;
 }
+  
 </style>
 </head>
 
@@ -756,9 +757,12 @@ let xoxBusy = false;
 function openXox() {
   document.getElementById("gameScreen").style.display = "none";
   document.getElementById("xoxScreen").style.display = "block";
+  document.getElementById("minesScreen").style.display = "none";
+
   document.getElementById("xoxScreen").scrollIntoView({
     behavior: "smooth"
   });
+
   startXox();
 }
 
@@ -909,9 +913,11 @@ function openMines() {
   document.getElementById("gameScreen").style.display = "none";
   document.getElementById("xoxScreen").style.display = "none";
   document.getElementById("minesScreen").style.display = "block";
+
   document.getElementById("minesScreen").scrollIntoView({
     behavior: "smooth"
   });
+
   startMines();
 }
 
