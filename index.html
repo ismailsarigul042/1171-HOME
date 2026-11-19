@@ -820,6 +820,356 @@ async function refreshTerritoryLabels() {
 
 refreshTerritoryLabels();
 
+    
+/* ==============================
+   1171 ARENA - OYUNCU SİSTEMİ
+============================== */
+
+(() => {
+  const $a = id => document.getElementById(id);
+
+  let arenaPlayer = null;
+  let snakeTimer = null;
+  let snake = [];
+  let food = {};
+  let direction = "right";
+  let nextDirection = "right";
+  let snakePoints = 0;
+  let snakeRunning = false;
+
+  async function arenaRequest(url, options = {}) {
+    const response = await fetch(url, {
+      credentials: "same-origin",
+      cache: "no-store",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {})
+      }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "İşlem başarısız.");
+    }
+
+    return data;
+  }
+
+  function arenaMessage(id, message, color = "var(--muted)") {
+    const el = $a(id);
+    if (el) {
+      el.textContent = message;
+      el.style.color = color;
+    }
+  }
+
+  function escapeArena(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  async function arenaRegister() {
+    const name = $a("arenaRegisterName").value.trim();
+    const alliance = $a("arenaRegisterAlliance").value.trim();
+    const pin = $a("arenaRegisterPin").value;
+
+    try {
+      const data = await arenaRequest("/api/players", {
+        method: "POST",
+        body: JSON.stringify({
+          action: "register",
+          name,
+          alliance,
+          pin
+        })
+      });
+
+      $a("arenaRegisterPin").value = "";
+      arenaMessage("arenaRegisterMessage", "Kayıt başarılı!", "var(--green)");
+      arenaSetPlayer(data.player);
+      await arenaLoadRankings();
+
+    } catch (error) {
+      arenaMessage("arenaRegisterMessage", error.message, "#ff7777");
+    }
+  }
+
+  async function arenaLogin() {
+    const name = $a("arenaLoginName").value.trim();
+    const pin = $a("arenaLoginPin").value;
+
+    try {
+      const data = await arenaRequest("/api/players", {
+        method: "POST",
+        body: JSON.stringify({
+          action: "login",
+          name,
+          pin
+        })
+      });
+
+      $a("arenaLoginPin").value = "";
+      arenaMessage("arenaLoginMessage", "Giriş başarılı!", "var(--green)");
+      arenaSetPlayer(data.player);
+      await arenaLoadRankings();
+
+    } catch (error) {
+      arenaMessage("arenaLoginMessage", error.message, "#ff7777");
+    }
+  }
+
+  function arenaSetPlayer(player) {
+    arenaPlayer = player;
+
+    $a("arenaPlayerPanel").style.display = "block";
+    $a("arenaPlayerInfo").textContent =
+      player.name + " | " + player.alliance;
+
+    $a("arenaMyScore").textContent = "Haftalık puanın yükleniyor...";
+  }
+
+  async function arenaLogout() {
+    try {
+      await fetch("/api/players", {
+        method: "DELETE",
+        credentials: "same-origin"
+      });
+
+      arenaPlayer = null;
+      $a("arenaPlayerPanel").style.display = "none";
+      arenaMessage("arenaLoginMessage", "Oyuncu oturumu kapatıldı.");
+    } catch (error) {
+      arenaMessage("arenaLoginMessage", "Çıkış yapılamadı.", "#ff7777");
+    }
+  }
+
+  async function arenaCheckLogin() {
+    try {
+      const data = await arenaRequest("/api/players");
+
+      if (data.loggedIn && data.player) {
+        arenaSetPlayer(data.player);
+      }
+    } catch (error) {
+      console.error("Oyuncu oturumu kontrol edilemedi:", error);
+    }
+  }
+
+  async function arenaLoadRankings() {
+    try {
+      const data = await arenaRequest("/api/scores");
+
+      $a("arenaPlayerRanking").innerHTML =
+        data.players.length
+          ? data.players.map((p, i) =>
+              `<p>${i + 1}. <strong>${escapeArena(p.name)}</strong>
+              <span style="float:right">${p.total_score} puan</span>
+              <br><small style="color:var(--muted)">${escapeArena(p.alliance)}</small></p>`
+            ).join("")
+          : "Henüz puan yok.";
+
+      $a("arenaAllianceRanking").innerHTML =
+        data.alliances.length
+          ? data.alliances.map((a, i) =>
+              `<p>${i + 1}. <strong>${escapeArena(a.alliance)}</strong>
+              <span style="float:right">${a.total_score} puan</span></p>`
+            ).join("")
+          : "Henüz puan yok.";
+
+      if (arenaPlayer) {
+        $a("arenaMyScore").textContent =
+          "Haftalık puanın: " + (data.myScore ?? 0);
+      }
+
+    } catch (error) {
+      $a("arenaPlayerRanking").textContent = "Sıralama yüklenemedi.";
+      $a("arenaAllianceRanking").textContent = "Sıralama yüklenemedi.";
+      console.error(error);
+    }
+  }
+
+  async function arenaSaveScore(game, score) {
+    if (!arenaPlayer) {
+      arenaMessage("arenaSnakeMessage",
+        "Puan kaydetmek için önce oyuncu girişi yapmalısın.",
+        "#ff7777");
+      return;
+    }
+
+    try {
+      await arenaRequest("/api/scores", {
+        method: "POST",
+        body: JSON.stringify({ game, score })
+      });
+
+      arenaMessage("arenaSnakeMessage", "Puanın kaydedildi!", "var(--green)");
+      await arenaLoadRankings();
+
+    } catch (error) {
+      arenaMessage("arenaSnakeMessage", error.message, "#ff7777");
+    }
+  }
+
+  /* ==============================
+     YILAN OYUNU
+  ============================== */
+
+  const canvas = $a("arenaSnakeCanvas");
+  const ctx = canvas.getContext("2d");
+  const size = 20;
+  const cells = canvas.width / size;
+
+  function snakeFood() {
+    do {
+      food = {
+        x: Math.floor(Math.random() * cells),
+        y: Math.floor(Math.random() * cells)
+      };
+    } while (snake.some(part => part.x === food.x && part.y === food.y));
+  }
+
+  function drawSnake() {
+    ctx.fillStyle = "#101114";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#e0b75d";
+    ctx.fillRect(food.x * size + 2, food.y * size + 2, size - 4, size - 4);
+
+    snake.forEach((part, index) => {
+      ctx.fillStyle = index === 0 ? "#f3ce7b" : "#6f9d65";
+      ctx.fillRect(
+        part.x * size + 1,
+        part.y * size + 1,
+        size - 2,
+        size - 2
+      );
+    });
+
+    $a("arenaSnakeScore").textContent = snakePoints;
+  }
+
+  function snakeStart() {
+    clearInterval(snakeTimer);
+
+    snake = [
+      { x: 10, y: 10 },
+      { x: 9, y: 10 },
+      { x: 8, y: 10 }
+    ];
+
+    direction = "right";
+    nextDirection = "right";
+    snakePoints = 0;
+    snakeRunning = true;
+
+    snakeFood();
+    drawSnake();
+
+    arenaMessage("arenaSnakeMessage", "Oyun başladı!");
+
+    snakeTimer = setInterval(snakeMove, 130);
+  }
+
+  function snakeMove() {
+    direction = nextDirection;
+
+    const head = { ...snake[0] };
+
+    if (direction === "up") head.y--;
+    if (direction === "down") head.y++;
+    if (direction === "left") head.x--;
+    if (direction === "right") head.x++;
+
+    const ateFood = head.x === food.x && head.y === food.y;
+
+    if (
+      head.x < 0 || head.x >= cells ||
+      head.y < 0 || head.y >= cells ||
+      snake.some((part, index) =>
+        index !== snake.length - 1 || ateFood
+          ? part.x === head.x && part.y === head.y
+          : false
+      )
+    ) {
+      snakeEnd();
+      return;
+    }
+
+    snake.unshift(head);
+
+    if (ateFood) {
+      snakePoints += 10;
+      snakeFood();
+    } else {
+      snake.pop();
+    }
+
+    drawSnake();
+  }
+
+  async function snakeEnd() {
+    clearInterval(snakeTimer);
+    snakeRunning = false;
+
+    arenaMessage(
+      "arenaSnakeMessage",
+      "Oyun bitti! Kazandığın puan: " + snakePoints
+    );
+
+    await arenaSaveScore("snake", snakePoints);
+  }
+
+  function snakeTurn(dir) {
+    const opposite = {
+      up: "down",
+      down: "up",
+      left: "right",
+      right: "left"
+    };
+
+    if (!snakeRunning || opposite[dir] === direction) return;
+    nextDirection = dir;
+  }
+
+  $a("arenaRegisterBtn").addEventListener("click", arenaRegister);
+  $a("arenaLoginBtn").addEventListener("click", arenaLogin);
+  $a("arenaLogoutBtn").addEventListener("click", arenaLogout);
+
+  $a("arenaSnakeStart").addEventListener("click", snakeStart);
+  $a("arenaSnakeUp").addEventListener("click", () => snakeTurn("up"));
+  $a("arenaSnakeDown").addEventListener("click", () => snakeTurn("down"));
+  $a("arenaSnakeLeft").addEventListener("click", () => snakeTurn("left"));
+  $a("arenaSnakeRight").addEventListener("click", () => snakeTurn("right"));
+  $a("arenaSnakeSelect").addEventListener("click", () => {
+    $a("arenaSnakeGame").scrollIntoView({ behavior: "smooth" });
+  });
+
+  document.addEventListener("keydown", event => {
+    const keys = {
+      ArrowUp: "up",
+      ArrowDown: "down",
+      ArrowLeft: "left",
+      ArrowRight: "right"
+    };
+
+    if (keys[event.key] && snakeRunning) {
+      event.preventDefault();
+      snakeTurn(keys[event.key]);
+    }
+  });
+
+  arenaCheckLogin();
+  arenaLoadRankings();
+
+})();
+
 </script>
 </body>
 </html>
