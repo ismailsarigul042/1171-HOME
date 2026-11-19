@@ -206,6 +206,25 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 
 <section class="panel" id="fun">
 
+  <!-- OYUN MERKEZİ -->
+  <article class="card" style="margin-bottom:18px;text-align:center">
+    <div class="card-head">
+      <h3>🎮 1171 ARCADE</h3>
+      <span class="tag">GAME CENTER</span>
+    </div>
+
+    <p style="color:var(--muted)">
+      Rengârenk oyunlar, rekabet ve haftalık liderlik mücadelesi seni bekliyor!
+    </p>
+
+    <button class="gold-btn"
+      onclick="location.href='/games.html'"
+      style="width:100%;max-width:350px;padding:15px">
+      🎮 OYUN MERKEZİNE GİR
+    </button>
+  </article>
+
+  <!-- OYUNCU KAYIT VE GİRİŞ -->
   <div class="card" style="margin-bottom:18px">
     <div class="card-head">
       <h3>1171 ARENA</h3>
@@ -240,96 +259,6 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
       <button class="small-btn" id="arenaLogoutBtn" style="float:right">ÇIKIŞ</button>
       <p id="arenaMyScore" style="color:var(--muted);margin-top:12px">Haftalık puanın: 0</p>
     </div>
-  </div>
-
-  <div class="grid" style="margin-bottom:18px">
-    <article class="card span-6">
-      <div class="card-head">
-        <h3>🏆 OYUNCU SIRALAMASI</h3>
-        <span class="tag">İLK 10</span>
-      </div>
-      <div id="arenaPlayerRanking">Sıralama yükleniyor...</div>
-    </article>
-
-    <article class="card span-6">
-      <div class="card-head">
-        <h3>⚔️ İTTİFAK SIRALAMASI</h3>
-        <span class="tag">İLK 3</span>
-      </div>
-      <div id="arenaAllianceRanking">Sıralama yükleniyor...</div>
-    </article>
-  </div>
-
-  <article class="card" style="margin-bottom:18px;text-align:center">
-    <div class="card-head">
-      <h3>🎮 1171 ARCADE</h3>
-      <span class="tag">GAME CENTER</span>
-    </div>
-
-    <p style="color:var(--muted)">
-      Rengârenk oyunlar, rekabet ve haftalık liderlik mücadelesi seni bekliyor!
-    </p>
-
-    <button class="gold-btn"
-      onclick="location.href='/games.html'"
-      style="width:100%;max-width:350px;padding:15px">
-      🎮 OYUN MERKEZİNE GİR
-    </button>
-  </article>
-
-  <article class="card" id="arenaSnakeGame">
-    <div class="card-head">
-      <h3>🐍 YILAN OYUNU</h3>
-      <span class="tag">SNAKE</span>
-    </div>
-
-    <p style="text-align:center;color:var(--muted)">
-      Yılanı yön tuşlarıyla veya telefonundaki yön düğmeleriyle hareket ettir.
-    </p>
-
-    <div style="text-align:center;font-size:20px;margin:12px">
-      PUAN: <strong id="arenaSnakeScore">0</strong>
-    </div>
-
-    <div style="max-width:500px;margin:auto;text-align:center">
-      <canvas id="arenaSnakeCanvas" width="400" height="400"
-        style="width:100%;max-width:400px;background:#101114;border:2px solid #806b42;border-radius:10px;display:block;margin:auto;touch-action:none">
-      </canvas>
-
-      <button class="gold-btn" id="arenaSnakeStart" style="margin-top:12px">OYUNU BAŞLAT</button>
-
-      <div style="display:grid;grid-template-columns:repeat(3,65px);gap:6px;justify-content:center;margin:14px auto">
-        <span></span>
-        <button class="small-btn" id="arenaSnakeUp">▲</button>
-        <span></span>
-        <button class="small-btn" id="arenaSnakeLeft">◀</button>
-        <button class="small-btn" id="arenaSnakeDown">▼</button>
-        <button class="small-btn" id="arenaSnakeRight">▶</button>
-      </div>
-
-      <p id="arenaSnakeMessage" style="color:var(--muted)"></p>
-    </div>
-  </article>
-
-  <div class="grid" style="margin-top:18px">
-    <article class="card span-6">
-      <div class="card-head">
-        <h3>ŞANSINI DENE</h3>
-        <span class="tag">FUN</span>
-      </div>
-      <div style="font-size:52px;text-align:center;padding:18px" id="dice">🎲</div>
-      <button class="gold-btn" id="rollDice">ZAR AT</button>
-      <p id="diceResult" style="text-align:center;color:var(--muted)"></p>
-    </article>
-
-    <article class="card span-6">
-      <div class="card-head">
-        <h3>ŞİFRELİ NOT DEFTERİ</h3>
-      </div>
-      <textarea id="memo" class="field" rows="5" placeholder="Bu tarayıcıda saklanacak notunu yaz..." style="resize:vertical"></textarea>
-      <button class="small-btn" id="saveMemo" style="margin-top:8px">Notu kaydet</button>
-      <span id="memoStatus" style="color:var(--green);font-size:12px;margin-left:8px"></span>
-    </article>
   </div>
 
 </section>
