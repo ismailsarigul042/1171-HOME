@@ -1066,7 +1066,9 @@ const cells = canvas ? canvas.width / size : 0;
   $a("arenaLoginBtn").addEventListener("click", arenaLogin);
   $a("arenaLogoutBtn").addEventListener("click", arenaLogout);
 
+  if ($a("arenaSnakeStart")) {
   $a("arenaSnakeStart").addEventListener("click", snakeStart);
+}
   $a("arenaSnakeUp").addEventListener("click", () => snakeTurn("up"));
   $a("arenaSnakeDown").addEventListener("click", () => snakeTurn("down"));
   $a("arenaSnakeLeft").addEventListener("click", () => snakeTurn("left"));
