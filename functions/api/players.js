@@ -191,8 +191,7 @@ export async function onRequestPost({ request, env }) {
 
 } catch (error) {
   console.error("OYUNCU KAYIT HATASI:", error);
-  return json({ error: "İşlem sırasında bir hata oluştu." }, 500);
-}
+return json({ error: String(error?.message || error) }, 500);}
 }
 
 export async function onRequestDelete({ request }) {
