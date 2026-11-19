@@ -934,8 +934,8 @@ refreshTerritoryLabels();
      YILAN OYUNU
   ============================== */
 
-  const canvas = $a("arenaSnakeCanvas");
-  const ctx = canvas.getContext("2d");
+ const canvas = $a("arenaSnakeCanvas");
+const ctx = canvas ? canvas.getContext("2d") : null;
   const size = 20;
   const cells = canvas.width / size;
 
