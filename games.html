@@ -1,0 +1,821 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#180f2b">
+<title>1171 ARCADE | Oyun Merkezi</title>
+
+<style>
+:root {
+  --bg:#180f2b;
+  --panel:#2b1b45;
+  --panel2:#211536;
+  --gold:#f5cb55;
+  --text:#fff;
+  --muted:#c7b9dc;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:radial-gradient(ellipse at top,#38204e,#180f2b 65%);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+}
+button { cursor:pointer; font-weight:bold; }
+header {
+  min-height:58px;
+  padding:10px 4%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  background:#160d25;
+  border-bottom:1px solid #49335e;
+}
+.logo { color:#ff83cf; font-size:23px; font-weight:900; }
+.nav { display:flex; gap:8px; }
+.nav button {
+  border:1px solid #59416f;
+  border-radius:9px;
+  padding:10px 14px;
+  background:#35204f;
+  color:white;
+}
+main { max-width:1150px; margin:auto; padding:20px 16px 50px; }
+
+.profile {
+  background:linear-gradient(120deg,#382052,#2c1b49);
+  border:1px solid #594171;
+  border-radius:19px;
+  padding:22px;
+  box-shadow:0 12px 30px #0004;
+}
+.profile-top {
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+.avatar {
+  width:68px;
+  height:68px;
+  border-radius:50%;
+  border:3px solid var(--gold);
+  background:#51356e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:37px;
+  flex-shrink:0;
+}
+.player-name { font-size:23px; font-weight:900; }
+.player-alliance { color:#65e9ff; }
+.muted { color:var(--muted); font-size:13px; }
+.profile-bottom {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:15px;
+  margin-top:20px;
+}
+.reset-box { color:var(--muted); font-size:12px; }
+.countdown {
+  color:var(--gold);
+  font-size:20px;
+  font-weight:900;
+  margin-top:5px;
+}
+.actions { display:flex; gap:9px; flex-wrap:wrap; }
+.action-btn {
+  border:1px solid #72578c;
+  background:#35204f;
+  color:white;
+  border-radius:11px;
+  padding:13px 17px;
+}
+.action-btn.gold {
+  color:#21152d;
+  background:linear-gradient(#ffe18a,#c89520);
+  border-color:#ffe18a;
+}
+.avatar-area {
+  margin-top:17px;
+  padding-top:14px;
+  border-top:1px solid #ffffff20;
+}
+.avatar-options {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.avatar-choice {
+  width:39px;
+  height:39px;
+  border-radius:50%;
+  border:1px solid #806398;
+  background:#402957;
+  font-size:21px;
+}
+.avatar-choice.selected {
+  border:2px solid var(--gold);
+  background:#67477d;
+}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-top:15px;
+}
+.stat {
+  background:#241738;
+  border:1px solid #4e3865;
+  border-radius:13px;
+  padding:15px;
+}
+.stat strong {
+  display:block;
+  color:var(--gold);
+  font-size:25px;
+  margin-bottom:5px;
+}
+.stat span { color:var(--muted); font-size:12px; }
+
+.section-title {
+  color:var(--gold);
+  font-size:21px;
+  margin:30px 0 15px;
+}
+.games {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+.game {
+  min-height:185px;
+  padding:17px;
+  border-radius:17px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  box-shadow:0 8px 20px #0004;
+  transition:.2s;
+}
+.game:hover { transform:translateY(-4px); filter:brightness(1.12); }
+.game-icon { font-size:42px; }
+.game h3 { margin:9px 0 5px; }
+.game p { font-size:12px; color:#eee; margin:0 0 12px; }
+.game button {
+  border:0;
+  border-radius:9px;
+  padding:11px;
+  background:#fff;
+  color:#21152d;
+}
+.snake { background:linear-gradient(140deg,#146b62,#174c62); }
+.xox { background:linear-gradient(140deg,#67418c,#49316c); }
+.mines { background:linear-gradient(140deg,#9a502d,#633b30); }
+.memory { background:linear-gradient(140deg,#286a45,#174b3a); }
+.reflex { background:linear-gradient(140deg,#315e9c,#263b70); }
+.rps { background:linear-gradient(140deg,#8b456c,#552c63); }
+.guess { background:linear-gradient(140deg,#8b692b,#58421d); }
+.quiz { background:linear-gradient(140deg,#367a88,#24515e); }
+
+.rank-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+.rank-box {
+  background:var(--panel);
+  border:1px solid #594171;
+  border-radius:16px;
+  padding:18px;
+}
+.rank-box h3 { color:var(--gold); margin-top:0; }
+.rank-row {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:11px 4px;
+  border-bottom:1px solid #ffffff18;
+  font-size:13px;
+}
+.rank-row:last-child { border:0; }
+.rank-score { color:var(--gold); font-weight:bold; }
+#gameScreen {
+  display:none;
+  background:var(--panel);
+  border:1px solid #72578c;
+  border-radius:18px;
+  padding:20px;
+  margin-top:25px;
+  text-align:center;
+}
+#snakeCanvas {
+  width:min(100%,400px);
+  height:auto;
+  background:#101d23;
+  border:2px solid #5e9c84;
+  border-radius:10px;
+  touch-action:none;
+}
+.controls {
+  display:flex;
+  justify-content:center;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.controls button {
+  background:#49316c;
+  color:white;
+  padding:12px 17px;
+  border:0;
+  border-radius:9px;
+}
+#snakeMessage { color:var(--gold); min-height:22px; }
+footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
+
+@media(max-width:750px) {
+  .games { grid-template-columns:repeat(2,1fr); }
+  .rank-grid { grid-template-columns:1fr; }
+}
+@media(max-width:430px) {
+  .stats { gap:7px; }
+  .stat { padding:10px; }
+  .stat strong { font-size:20px; }
+  .profile { padding:15px; }
+  .player-name { font-size:19px; }
+  .game { padding:12px; min-height:175px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🎮 1171 ARCADE</div>
+  <div class="nav">
+    <button onclick="location.href='/'">↩ ANA SAYFA</button>
+    <button onclick="logoutPlayer()">ÇIKIŞ</button>
+  </div>
+</header>
+
+<main>
+
+<section class="profile">
+  <div class="profile-top">
+    <div class="avatar" id="profileAvatar">👑</div>
+    <div>
+      <div class="player-name" id="playerName">Oyuncu yükleniyor...</div>
+      <div class="player-alliance" id="playerAlliance"></div>
+      <div class="muted">Bir oyun seç ve sıralamada yüksel!</div>
+    </div>
+  </div>
+
+  <div class="profile-bottom">
+    <div class="reset-box">
+      Haftalık sıralamanın sıfırlanmasına
+      <div class="countdown" id="weekCountdown">Hesaplanıyor...</div>
+    </div>
+    <div class="actions">
+      <button class="action-btn gold" onclick="goToRankings()">🏆 Genel Sıralama</button>
+      <button class="action-btn" onclick="goToHall()">🏛 Şöhretler Salonu</button>
+    </div>
+  </div>
+
+  <div class="avatar-area">
+    <div class="muted">Profil resmini seç:</div>
+    <div class="avatar-options" id="avatarOptions">
+      <button class="avatar-choice selected" onclick="selectAvatar('👑',this)">👑</button>
+      <button class="avatar-choice" onclick="selectAvatar('🐺',this)">🐺</button>
+      <button class="avatar-choice" onclick="selectAvatar('🦁',this)">🦁</button>
+      <button class="avatar-choice" onclick="selectAvatar('🐉',this)">🐉</button>
+      <button class="avatar-choice" onclick="selectAvatar('🦅',this)">🦅</button>
+      <button class="avatar-choice" onclick="selectAvatar('⚔️',this)">⚔️</button>
+      <button class="avatar-choice" onclick="selectAvatar('🔥',this)">🔥</button>
+      <button class="avatar-choice" onclick="selectAvatar('🏹',this)">🏹</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <strong id="myRank">-</strong>
+      <span>Oyuncu sırası</span>
+    </div>
+    <div class="stat">
+      <strong id="myScore">0</strong>
+      <span>Haftalık puan</span>
+    </div>
+    <div class="stat">
+      <strong id="myAllianceRank">-</strong>
+      <span>İttifak sırası</span>
+    </div>
+  </div>
+</section>
+
+<h2 class="section-title">🎯 OYUNUNU SEÇ</h2>
+
+<section class="games">
+
+<article class="game snake">
+  <div>
+    <div class="game-icon">🐍</div>
+    <h3>SNAKE</h3>
+    <p>Yılanını büyüt, rekor kır!</p>
+  </div>
+  <button onclick="openSnake()">OYNA</button>
+</article>
+
+<article class="game xox">
+  <div>
+    <div class="game-icon">⭕</div>
+    <h3>XOX</h3>
+    <p>Rakibini alt et!</p>
+  </div>
+  <button onclick="comingSoon()">YAKINDA</button>
+</article>
+
+<article class="game mines">
+  <div>
+    <div class="game-icon">💣</div>
+    <h3>MAYIN TARLASI</h3>
+    <p>Dikkatli ol, mayına basma!</p>
+  </div>
+  <button onclick="comingSoon()">YAKINDA</button>
+</article>
+
+<article class="game memory">
+  <div>
+    <div class="game-icon">🧠</div>
+    <h3>HAFIZA</h3>
+    <p>Eşleşmeleri bul!</p>
+  </div>
+  <button onclick="comingSoon()">YAKINDA</button>
+</article>
+
+<article class="game reflex">
+  <div>
+    <div class="game-icon">⚡</div>
+    <h3>REFLEKS</h3>
+    <p>Hızını test et!</p>
+  </div>
+  <button onclick="comingSoon()">YAKINDA</button>
+</article>
+
+<article class="game rps">
+  <div>
+    <div class="game-icon">✊</div>
+    <h3>TAŞ KAĞIT MAKAS</h3>
+    <p>Bilgisayara karşı oyna!</p>
+  </div>
+  <button onclick="comingSoon()">YAKINDA</button>
+</article>
+
+<article class="game guess">
+  <div>
+    <div class="game-icon">🔢</div>
+    <h3>SAYI TAHMİNİ</h3>
+    <p>Gizli sayıyı bul!</p>
+  </div>
+  <button onclick="comingSoon()">YAKINDA</button>
+</article>
+
+<article class="game quiz">
+  <div>
+    <div class="game-icon">❓</div>
+    <h3>BİLGİ YARIŞMASI</h3>
+    <p>Bilgini konuştur!</p>
+  </div>
+  <button onclick="comingSoon()">YAKINDA</button>
+</article>
+
+</section>
+
+<section id="gameScreen">
+  <h2 style="color:#f5cb55">🐍 SNAKE ARENA</h2>
+  <p>Yiyecekleri topla, yılanını büyüt!</p>
+  <h3>PUAN: <span id="snakeScore">0</span></h3>
+  <canvas id="snakeCanvas" width="400" height="400"></canvas>
+  <div id="snakeMessage">Başlamak için BAŞLAT düğmesine bas.</div>
+  <div class="controls">
+    <button onclick="startSnake()">BAŞLAT / YENİDEN</button>
+    <button onclick="closeSnake()">OYUNLARA DÖN</button>
+  </div>
+  <div class="controls">
+    <button onclick="changeDirection('up')">⬆️</button>
+  </div>
+  <div class="controls">
+    <button onclick="changeDirection('left')">⬅️</button>
+    <button onclick="changeDirection('down')">⬇️</button>
+    <button onclick="changeDirection('right')">➡️</button>
+  </div>
+</section>
+
+<h2 class="section-title" id="rankings">🏆 GENEL SIRALAMA</h2>
+
+<section class="rank-grid">
+  <div class="rank-box">
+    <h3>👑 EN İYİ OYUNCULAR</h3>
+    <div id="playerRanking">Sıralama yükleniyor...</div>
+  </div>
+  <div class="rank-box">
+    <h3>⚔ İLK 3 İTTİFAK</h3>
+    <div id="allianceRanking">Sıralama yükleniyor...</div>
+  </div>
+</section>
+
+<section id="hall" class="rank-box" style="margin-top:18px">
+  <h3>🏛 ŞÖHRETLER SALONU</h3>
+  <p class="muted">Geçmiş haftaların şampiyonları ve başarı arşivi burada yer alacak.</p>
+  <p style="color:#f5cb55">Haftalık şampiyonlar arşivi yakında açılıyor!</p>
+</section>
+
+</main>
+
+<footer>1171 ARCADE • HAVE FUN • 1171 HOME</footer>
+
+<script>
+let currentPlayer = null;
+let rankingData = null;
+
+const avatarChoices = ["👑","🐺","🦁","🐉","🦅","⚔️","🔥","🏹"];
+
+async function loadPlayer() {
+  try {
+    const response = await fetch("/api/players", {
+      credentials:"same-origin",
+      cache:"no-store"
+    });
+
+    const data = await response.json();
+
+    if (!data.loggedIn) {
+      document.getElementById("playerName").textContent =
+        "Oyuncu girişi gerekli";
+      document.getElementById("playerAlliance").textContent =
+        "Önce ana sayfadan oyuncu PIN'inle giriş yap.";
+      return;
+    }
+
+    currentPlayer = data.player;
+
+    document.getElementById("playerName").textContent =
+      currentPlayer.name;
+
+    document.getElementById("playerAlliance").textContent =
+      currentPlayer.alliance;
+
+    const savedAvatar = localStorage.getItem(
+      "1171_avatar_" + currentPlayer.id
+    ) || "👑";
+
+    selectAvatar(savedAvatar);
+
+  } catch(error) {
+    document.getElementById("playerName").textContent =
+      "Oyuncu bilgisi alınamadı.";
+  }
+}
+
+function selectAvatar(avatar, button) {
+  if (!avatarChoices.includes(avatar)) return;
+
+  document.getElementById("profileAvatar").textContent = avatar;
+
+  if (currentPlayer) {
+    localStorage.setItem(
+      "1171_avatar_" + currentPlayer.id,
+      avatar
+    );
+  }
+
+  document.querySelectorAll(".avatar-choice").forEach(btn => {
+    btn.classList.toggle(
+      "selected",
+      btn.textContent.trim() === avatar
+    );
+  });
+}
+
+async function loadRankings() {
+  try {
+    const response = await fetch("/api/scores", {
+      credentials:"same-origin",
+      cache:"no-store"
+    });
+
+    const data = await response.json();
+    rankingData = data;
+
+    const playerBox = document.getElementById("playerRanking");
+    const allianceBox = document.getElementById("allianceRanking");
+
+    playerBox.innerHTML = "";
+    allianceBox.innerHTML = "";
+
+    if (!data.players || !data.players.length) {
+      playerBox.textContent = "Henüz puan kaydı yok.";
+    } else {
+      data.players.forEach((p,index) => {
+        const row = document.createElement("div");
+        row.className = "rank-row";
+
+        const name = document.createElement("span");
+        name.textContent = (index+1) + ". " + p.name;
+
+        const score = document.createElement("span");
+        score.className = "rank-score";
+        score.textContent = p.total_score + " P";
+
+        row.append(name,score);
+        playerBox.appendChild(row);
+      });
+    }
+
+    if (!data.alliances || !data.alliances.length) {
+      allianceBox.textContent = "Henüz ittifak puanı yok.";
+    } else {
+      data.alliances.forEach((a,index) => {
+        const row = document.createElement("div");
+        row.className = "rank-row";
+
+        const name = document.createElement("span");
+        name.textContent = (index+1) + ". " + a.alliance;
+
+        const score = document.createElement("span");
+        score.className = "rank-score";
+        score.textContent = a.total_score + " P";
+
+        row.append(name,score);
+        allianceBox.appendChild(row);
+      });
+    }
+
+    updateMyStats(data);
+
+  } catch(error) {
+    document.getElementById("playerRanking").textContent =
+      "Sıralama alınamadı.";
+    document.getElementById("allianceRanking").textContent =
+      "Sıralama alınamadı.";
+  }
+}
+
+function updateMyStats(data) {
+  if (!currentPlayer) return;
+
+  document.getElementById("myScore").textContent =
+    data.myScore ?? 0;
+
+  const playerIndex = (data.players || []).findIndex(
+    p => Number(p.id) === Number(currentPlayer.id)
+  );
+
+  document.getElementById("myRank").textContent =
+    playerIndex >= 0 ? (playerIndex+1) + "." : "İlk 10 dışı";
+
+  const allianceIndex = (data.alliances || []).findIndex(
+    a => String(a.alliance).trim().toLowerCase() ===
+         String(currentPlayer.alliance).trim().toLowerCase()
+  );
+
+  document.getElementById("myAllianceRank").textContent =
+    allianceIndex >= 0 ? (allianceIndex+1) + "." : "İlk 3 dışı";
+}
+
+function goToRankings() {
+  document.getElementById("rankings").scrollIntoView({
+    behavior:"smooth"
+  });
+}
+
+function goToHall() {
+  document.getElementById("hall").scrollIntoView({
+    behavior:"smooth"
+  });
+}
+
+function comingSoon() {
+  alert("Bu oyun çok yakında 1171 ARCADE'de!");
+}
+
+async function logoutPlayer() {
+  await fetch("/api/players", {
+    method:"DELETE",
+    credentials:"same-origin"
+  });
+  location.href="/";
+}
+
+function updateCountdown() {
+  const now = new Date();
+  const next = new Date(now);
+
+  const daysUntilMonday = (8 - now.getDay()) % 7 || 7;
+
+  next.setDate(now.getDate() + daysUntilMonday);
+  next.setHours(0,0,0,0);
+
+  const difference = next - now;
+  const days = Math.floor(difference / 86400000);
+  const hours = Math.floor((difference % 86400000) / 3600000);
+  const minutes = Math.floor((difference % 3600000) / 60000);
+  const seconds = Math.floor((difference % 60000) / 1000);
+
+  document.getElementById("weekCountdown").textContent =
+    days + " gün " + hours + " saat " +
+    minutes + " dk " + seconds + " sn";
+}
+
+setInterval(updateCountdown,1000);
+updateCountdown();
+
+const canvas = document.getElementById("snakeCanvas");
+const ctx = canvas.getContext("2d");
+
+let snake = [];
+let food = {};
+let direction = "right";
+let nextDirection = "right";
+let score = 0;
+let snakeTimer = null;
+let snakeRunning = false;
+let scoreSent = false;
+
+function openSnake() {
+  document.getElementById("gameScreen").style.display = "block";
+  document.getElementById("gameScreen").scrollIntoView({
+    behavior:"smooth"
+  });
+}
+
+function closeSnake() {
+  stopSnake();
+  document.getElementById("gameScreen").style.display = "none";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function stopSnake() {
+  clearInterval(snakeTimer);
+  snakeTimer = null;
+  snakeRunning = false;
+}
+
+function randomFood() {
+  food = {
+    x:Math.floor(Math.random()*20),
+    y:Math.floor(Math.random()*20)
+  };
+}
+
+function drawSnake() {
+  ctx.fillStyle="#101d23";
+  ctx.fillRect(0,0,400,400);
+
+  ctx.fillStyle="#f5cb55";
+  ctx.fillRect(food.x*20+3,food.y*20+3,14,14);
+
+  snake.forEach((part,index) => {
+    ctx.fillStyle = index === 0 ? "#a5f3a5" : "#42b883";
+    ctx.fillRect(part.x*20+2,part.y*20+2,16,16);
+  });
+}
+
+function startSnake() {
+  if (!currentPlayer) {
+    document.getElementById("snakeMessage").textContent =
+      "Önce oyuncu PIN'inle giriş yapmalısın.";
+    return;
+  }
+
+  stopSnake();
+
+  snake = [
+    {x:8,y:10},
+    {x:7,y:10},
+    {x:6,y:10}
+  ];
+
+  direction = "right";
+  nextDirection = "right";
+  score = 0;
+  scoreSent = false;
+  snakeRunning = true;
+
+  document.getElementById("snakeScore").textContent = score;
+  document.getElementById("snakeMessage").textContent = "Bol şans!";
+
+  randomFood();
+  drawSnake();
+
+  snakeTimer = setInterval(moveSnake,140);
+}
+
+function changeDirection(next) {
+  if (!snakeRunning) return;
+
+  if (next === "up" && direction !== "down") nextDirection = "up";
+  if (next === "down" && direction !== "up") nextDirection = "down";
+  if (next === "left" && direction !== "right") nextDirection = "left";
+  if (next === "right" && direction !== "left") nextDirection = "right";
+}
+
+function moveSnake() {
+  direction = nextDirection;
+
+  const head = {...snake[0]};
+
+  if (direction === "up") head.y--;
+  if (direction === "down") head.y++;
+  if (direction === "left") head.x--;
+  if (direction === "right") head.x++;
+
+  const ateFood = head.x === food.x && head.y === food.y;
+
+  if (
+    head.x < 0 || head.x >= 20 ||
+    head.y < 0 || head.y >= 20 ||
+    snake.some((part,index) =>
+      (!ateFood || index < snake.length-1) &&
+      part.x === head.x && part.y === head.y
+    )
+  ) {
+    endSnake();
+    return;
+  }
+
+  snake.unshift(head);
+
+  if (ateFood) {
+    score += 10;
+    document.getElementById("snakeScore").textContent = score;
+    randomFood();
+  } else {
+    snake.pop();
+  }
+
+  drawSnake();
+}
+
+async function endSnake() {
+  stopSnake();
+
+  document.getElementById("snakeMessage").textContent =
+    "Oyun bitti! Kazandığın puan: " + score;
+
+  if (scoreSent) return;
+  scoreSent = true;
+
+  try {
+    const response = await fetch("/api/scores", {
+      method:"POST",
+      credentials:"same-origin",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        game:"snake",
+        score:score
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      document.getElementById("snakeMessage").textContent +=
+        " Puanın kaydedildi!";
+      loadRankings();
+    } else {
+      document.getElementById("snakeMessage").textContent +=
+        " " + (result.error || "Puan kaydedilemedi.");
+    }
+
+  } catch(error) {
+    document.getElementById("snakeMessage").textContent +=
+      " Puan gönderilemedi.";
+  }
+}
+
+document.addEventListener("keydown",event => {
+  const keys = {
+    ArrowUp:"up",
+    ArrowDown:"down",
+    ArrowLeft:"left",
+    ArrowRight:"right"
+  };
+
+  if (keys[event.key] && snakeRunning) {
+    event.preventDefault();
+    changeDirection(keys[event.key]);
+  }
+});
+
+loadPlayer().then(() => loadRankings());
+</script>
+
+</body>
+</html>
