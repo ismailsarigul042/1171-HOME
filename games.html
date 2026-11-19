@@ -306,7 +306,34 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
 .mines-board button.mine {
   background: #8b2929;
 }
-  
+  .memory-board {
+  display: grid;
+  grid-template-columns: repeat(4, 75px);
+  gap: 10px;
+  justify-content: center;
+  margin: 25px auto;
+}
+
+.memory-board button {
+  width: 75px;
+  height: 85px;
+  border: 2px solid #a9873b;
+  border-radius: 12px;
+  background: #292632;
+  color: #f5cb55;
+  font-size: 30px;
+  cursor: pointer;
+  transition: transform .2s;
+}
+
+.memory-board button:hover {
+  transform: scale(1.05);
+}
+
+.memory-board button:disabled {
+  cursor: default;
+  opacity: 1;
+}
 </style>
 </head>
 
@@ -409,7 +436,7 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
     <h3>HAFIZA</h3>
     <p>Eşleşmeleri bul!</p>
   </div>
-  <button onclick="comingSoon()">YAKINDA</button>
+<button onclick="openMemory()">OYNA</button>
 </article>
 
 <article class="game reflex">
@@ -504,6 +531,21 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
   <div class="controls">
     <button onclick="startMines()">YENİ OYUN</button>
     <button onclick="closeMines()">OYUNLARA DÖN</button>
+  </div>
+</section>
+  <section id="memoryScreen" style="display:none;text-align:center">
+  <h2 style="color:#f5cb55">🧠 MEMORY ARENA</h2>
+  <p>Aynı sembolleri eşleştir, hafızanı konuştur!</p>
+
+  <h3>HAMLE: <span id="memoryMoves">0</span></h3>
+  <h3>PUAN: <span id="memoryScore">0</span></h3>
+  <h3 id="memoryStatus">Kartları açmaya başla!</h3>
+
+  <div id="memoryBoard" class="memory-board"></div>
+
+  <div class="controls">
+    <button onclick="startMemory()">YENİ OYUN</button>
+    <button onclick="closeMemory()">OYUNLARA DÖN</button>
   </div>
 </section>
 
@@ -1104,6 +1146,161 @@ async function minesSubmitScore(points) {
     }
   } catch (error) {
     console.error("Mayın Tarlası puanı gönderilemedi:", error);
+  }
+}
+  let memoryCards = [];
+let memoryFirst = null;
+let memorySecond = null;
+let memoryLocked = false;
+let memoryMovesCount = 0;
+let memoryMatched = 0;
+
+const memorySymbols = ["⚔️","🛡️","👑","🏰","🐉","💎","🔥","🌙"];
+
+function openMemory() {
+  document.getElementById("gameScreen").style.display = "none";
+  document.getElementById("xoxScreen").style.display = "none";
+  document.getElementById("minesScreen").style.display = "none";
+  document.getElementById("memoryScreen").style.display = "block";
+
+  document.getElementById("memoryScreen").scrollIntoView({
+    behavior: "smooth"
+  });
+
+  startMemory();
+}
+
+function closeMemory() {
+  document.getElementById("memoryScreen").style.display = "none";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function startMemory() {
+  memoryCards = [...memorySymbols, ...memorySymbols]
+    .sort(() => Math.random() - 0.5)
+    .map(symbol => ({
+      symbol,
+      opened: false,
+      matched: false
+    }));
+
+  memoryFirst = null;
+  memorySecond = null;
+  memoryLocked = false;
+  memoryMovesCount = 0;
+  memoryMatched = 0;
+
+  document.getElementById("memoryMoves").textContent = "0";
+  document.getElementById("memoryScore").textContent = "100";
+  document.getElementById("memoryStatus").textContent =
+    "Aynı sembolleri bul!";
+
+  memoryDraw();
+}
+
+function memoryDraw() {
+  const board = document.getElementById("memoryBoard");
+  board.innerHTML = "";
+
+  memoryCards.forEach((card, index) => {
+    const button = document.createElement("button");
+
+    button.textContent =
+      card.opened || card.matched ? card.symbol : "?";
+
+    if (card.matched) {
+      button.style.background = "#315c45";
+      button.style.borderColor = "#70d68a";
+    }
+
+    button.disabled = card.opened || card.matched || memoryLocked;
+    button.onclick = () => memoryFlip(index);
+
+    board.appendChild(button);
+  });
+}
+
+function memoryFlip(index) {
+  if (memoryLocked) return;
+
+  const card = memoryCards[index];
+
+  if (card.opened || card.matched) return;
+
+  card.opened = true;
+  memoryDraw();
+
+  if (memoryFirst === null) {
+    memoryFirst = index;
+    return;
+  }
+
+  memorySecond = index;
+  memoryMovesCount++;
+
+  document.getElementById("memoryMoves").textContent =
+    memoryMovesCount;
+
+  if (
+    memoryCards[memoryFirst].symbol ===
+    memoryCards[memorySecond].symbol
+  ) {
+    memoryCards[memoryFirst].matched = true;
+    memoryCards[memorySecond].matched = true;
+
+    memoryMatched += 2;
+    memoryFirst = null;
+    memorySecond = null;
+
+    memoryDraw();
+
+    if (memoryMatched === memoryCards.length) {
+      memoryFinish();
+    }
+
+    return;
+  }
+
+  memoryLocked = true;
+
+  setTimeout(() => {
+    memoryCards[memoryFirst].opened = false;
+    memoryCards[memorySecond].opened = false;
+
+    memoryFirst = null;
+    memorySecond = null;
+    memoryLocked = false;
+
+    memoryDraw();
+  }, 900);
+}
+
+async function memoryFinish() {
+  memoryLocked = true;
+
+  const points = Math.max(10, 100 - Math.max(0, memoryMovesCount - 8) * 5);
+
+  document.getElementById("memoryScore").textContent = points;
+  document.getElementById("memoryStatus").textContent =
+    "🏆 TEBRİKLER! Bütün kartları eşleştirdin!";
+
+  if (!currentPlayer) return;
+
+  try {
+    const response = await fetch("/api/scores", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        game: "memory",
+        score: points
+      })
+    });
+
+    if (response.ok) {
+      await loadRankings();
+    }
+  } catch (error) {
+    console.error("Hafıza oyunu puanı gönderilemedi:", error);
   }
 }
 function stopSnake() {
