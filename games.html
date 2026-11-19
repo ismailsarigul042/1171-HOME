@@ -454,7 +454,7 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
     <h3>TAŞ KAĞIT MAKAS</h3>
     <p>Bilgisayara karşı oyna!</p>
   </div>
-  <button onclick="comingSoon()">YAKINDA</button>
+<button onclick="openRps()">OYNA</button>
 </article>
 
 <article class="game guess">
@@ -568,7 +568,27 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
     <button onclick="closeReflex()">OYUNLARA DÖN</button>
   </div>
 </section>
+<section id="rpsScreen" style="display:none;text-align:center">
+  <h2 style="color:#f5cb55">✊ TAŞ KAĞIT MAKAS</h2>
+  <p>Bilgisayara karşı oyna, kazan ve puan topla!</p>
 
+  <h3 id="rpsStatus">Seçimini yap!</h3>
+
+  <div style="display:flex;justify-content:center;gap:15px;margin:25px 0">
+    <button onclick="playRps('rock')" style="font-size:35px;padding:18px">✊</button>
+    <button onclick="playRps('paper')" style="font-size:35px;padding:18px">✋</button>
+    <button onclick="playRps('scissors')" style="font-size:35px;padding:18px">✌️</button>
+  </div>
+
+  <h3 id="rpsResult">Sen: - | Bilgisayar: -</h3>
+  <h3>PUAN: <span id="rpsScore">0</span></h3>
+  <h3 id="rpsTotal">Galibiyet: 0 | Beraberlik: 0 | Mağlubiyet: 0</h3>
+
+  <div class="controls">
+    <button onclick="resetRps()">SIFIRLA</button>
+    <button onclick="closeRps()">OYUNLARA DÖN</button>
+  </div>
+</section>
 <h2 class="section-title" id="rankings">🏆 GENEL SIRALAMA</h2>
 
 <section class="rank-grid">
@@ -1428,6 +1448,109 @@ async function reflexClick() {
     }
   } catch (error) {
     console.error("Refleks puanı gönderilemedi:", error);
+  }
+}
+  let rpsWins = 0;
+let rpsDraws = 0;
+let rpsLosses = 0;
+let rpsTotalScore = 0;
+
+function openRps() {
+  document.getElementById("gameScreen").style.display = "none";
+  document.getElementById("xoxScreen").style.display = "none";
+  document.getElementById("minesScreen").style.display = "none";
+  document.getElementById("memoryScreen").style.display = "none";
+  document.getElementById("reflexScreen").style.display = "none";
+  document.getElementById("rpsScreen").style.display = "block";
+
+  document.getElementById("rpsScreen").scrollIntoView({
+    behavior: "smooth"
+  });
+
+  resetRps();
+}
+
+function closeRps() {
+  document.getElementById("rpsScreen").style.display = "none";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function resetRps() {
+  rpsWins = 0;
+  rpsDraws = 0;
+  rpsLosses = 0;
+  rpsTotalScore = 0;
+
+  document.getElementById("rpsStatus").textContent = "Seçimini yap!";
+  document.getElementById("rpsResult").textContent =
+    "Sen: - | Bilgisayar: -";
+  document.getElementById("rpsScore").textContent = "0";
+  document.getElementById("rpsTotal").textContent =
+    "Galibiyet: 0 | Beraberlik: 0 | Mağlubiyet: 0";
+}
+
+async function playRps(playerChoice) {
+  const choices = ["rock", "paper", "scissors"];
+  const symbols = {
+    rock: "✊ Taş",
+    paper: "✋ Kağıt",
+    scissors: "✌️ Makas"
+  };
+
+  const computerChoice =
+    choices[Math.floor(Math.random() * choices.length)];
+
+  let points = 0;
+
+  if (playerChoice === computerChoice) {
+    rpsDraws++;
+    points = 5;
+    document.getElementById("rpsStatus").textContent =
+      "🤝 BERABERE!";
+  } else if (
+    (playerChoice === "rock" && computerChoice === "scissors") ||
+    (playerChoice === "paper" && computerChoice === "rock") ||
+    (playerChoice === "scissors" && computerChoice === "paper")
+  ) {
+    rpsWins++;
+    points = 20;
+    document.getElementById("rpsStatus").textContent =
+      "🏆 KAZANDIN!";
+  } else {
+    rpsLosses++;
+    document.getElementById("rpsStatus").textContent =
+      "😅 BU TURU BİLGİSAYAR KAZANDI!";
+  }
+
+  rpsTotalScore += points;
+
+  document.getElementById("rpsResult").textContent =
+    "Sen: " + symbols[playerChoice] +
+    " | Bilgisayar: " + symbols[computerChoice];
+
+  document.getElementById("rpsScore").textContent = rpsTotalScore;
+  document.getElementById("rpsTotal").textContent =
+    "Galibiyet: " + rpsWins +
+    " | Beraberlik: " + rpsDraws +
+    " | Mağlubiyet: " + rpsLosses;
+
+  if (points > 0 && currentPlayer) {
+    try {
+      const response = await fetch("/api/scores", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          game: "rps",
+          score: points
+        })
+      });
+
+      if (response.ok) {
+        await loadRankings();
+      }
+    } catch (error) {
+      console.error("Taş-Kâğıt-Makas puanı gönderilemedi:", error);
+    }
   }
 }
 function stopSnake() {
