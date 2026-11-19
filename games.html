@@ -253,6 +253,30 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
   .player-name { font-size:19px; }
   .game { padding:12px; min-height:175px; }
 }
+  .xox-board {
+  display: grid;
+  grid-template-columns: repeat(3, 90px);
+  gap: 8px;
+  justify-content: center;
+  margin: 25px auto;
+}
+
+.xox-board button {
+  width: 90px;
+  height: 90px;
+  font-size: 38px;
+  font-weight: bold;
+  color: #f5cb55;
+  background: #24232c;
+  border: 2px solid #a9873b;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.xox-board button:disabled {
+  cursor: default;
+  opacity: 1;
+}
 </style>
 </head>
 
@@ -338,8 +362,7 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
     <h3>XOX</h3>
     <p>Rakibini alt et!</p>
   </div>
-  <button onclick="comingSoon()">YAKINDA</button>
-</article>
+<button onclick="openXox()">OYNA</button></article>
 
 <article class="game mines">
   <div>
@@ -414,6 +437,29 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
     <button onclick="changeDirection('left')">⬅️</button>
     <button onclick="changeDirection('down')">⬇️</button>
     <button onclick="changeDirection('right')">➡️</button>
+  </div>
+</section>
+  <section id="xoxScreen" style="display:none;text-align:center">
+  <h2 style="color:#f5cb55">⭕ XOX ARENA</h2>
+  <p>Bilgisayara karşı oyna ve puanını topla!</p>
+
+  <h3 id="xoxStatus">Sıra sende! (X)</h3>
+  <div id="xoxBoard" class="xox-board">
+    <button onclick="xoxMove(0)"></button>
+    <button onclick="xoxMove(1)"></button>
+    <button onclick="xoxMove(2)"></button>
+    <button onclick="xoxMove(3)"></button>
+    <button onclick="xoxMove(4)"></button>
+    <button onclick="xoxMove(5)"></button>
+    <button onclick="xoxMove(6)"></button>
+    <button onclick="xoxMove(7)"></button>
+    <button onclick="xoxMove(8)"></button>
+  </div>
+
+  <h3 id="xoxResult"></h3>
+  <div class="controls">
+    <button onclick="startXox()">YENİDEN OYNA</button>
+    <button onclick="closeXox()">OYUNLARA DÖN</button>
   </div>
 </section>
 
@@ -660,7 +706,155 @@ function closeSnake() {
   document.getElementById("gameScreen").style.display = "none";
   window.scrollTo({top:0,behavior:"smooth"});
 }
+let xoxCells = ["","","","","","","","",""];
+let xoxFinished = false;
+let xoxBusy = false;
 
+function openXox() {
+  document.getElementById("gameScreen").style.display = "none";
+  document.getElementById("xoxScreen").style.display = "block";
+  document.getElementById("xoxScreen").scrollIntoView({
+    behavior: "smooth"
+  });
+  startXox();
+}
+
+function closeXox() {
+  document.getElementById("xoxScreen").style.display = "none";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function startXox() {
+  xoxCells = ["","","","","","","","",""];
+  xoxFinished = false;
+  xoxBusy = false;
+
+  document.querySelectorAll("#xoxBoard button").forEach(button => {
+    button.textContent = "";
+    button.disabled = false;
+  });
+
+  document.getElementById("xoxStatus").textContent = "Sıra sende! (X)";
+  document.getElementById("xoxResult").textContent = "";
+}
+
+function xoxMove(index) {
+  if (xoxFinished || xoxBusy || xoxCells[index]) return;
+
+  xoxCells[index] = "X";
+  xoxDraw();
+
+  if (xoxCheck("X")) {
+    xoxEnd("Kazandın! 🎉", 100);
+    return;
+  }
+
+  if (xoxCells.every(cell => cell)) {
+    xoxEnd("Berabere! 🤝", 25);
+    return;
+  }
+
+  xoxBusy = true;
+  document.getElementById("xoxStatus").textContent = "Bilgisayar düşünüyor...";
+
+  setTimeout(() => {
+    xoxComputerMove();
+    xoxDraw();
+
+    if (xoxCheck("O")) {
+      xoxEnd("Bilgisayar kazandı!", 0);
+    } else if (xoxCells.every(cell => cell)) {
+      xoxEnd("Berabere! 🤝", 25);
+    } else {
+      xoxBusy = false;
+      document.getElementById("xoxStatus").textContent = "Sıra sende! (X)";
+    }
+  }, 450);
+}
+
+function xoxComputerMove() {
+  const empty = xoxCells
+    .map((cell, index) => cell === "" ? index : -1)
+    .filter(index => index !== -1);
+
+  // Önce kazanma hamlesini ara.
+  let move = xoxFindWinningMove("O");
+
+  // Oyuncunun kazanmasını engelle.
+  if (move === -1) move = xoxFindWinningMove("X");
+
+  // Merkez, köşeler ve diğer boş kareler.
+  if (move === -1) {
+    const choices = [4,0,2,6,8,1,3,5,7]
+      .filter(index => xoxCells[index] === "");
+    move = choices[Math.floor(Math.random() * choices.length)];
+  }
+
+  if (move !== undefined && move !== -1) {
+    xoxCells[move] = "O";
+  }
+}
+
+function xoxFindWinningMove(symbol) {
+  for (let i = 0; i < 9; i++) {
+    if (xoxCells[i] !== "") continue;
+
+    xoxCells[i] = symbol;
+    const wins = xoxCheck(symbol);
+    xoxCells[i] = "";
+
+    if (wins) return i;
+  }
+  return -1;
+}
+
+function xoxCheck(symbol) {
+  const wins = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+
+  return wins.some(line =>
+    line.every(index => xoxCells[index] === symbol)
+  );
+}
+
+function xoxDraw() {
+  document.querySelectorAll("#xoxBoard button").forEach((button, index) => {
+    button.textContent = xoxCells[index];
+    button.disabled = xoxCells[index] !== "" || xoxFinished;
+  });
+}
+
+async function xoxEnd(message, points) {
+  xoxFinished = true;
+  xoxBusy = false;
+  xoxDraw();
+
+  document.getElementById("xoxStatus").textContent = "Oyun bitti!";
+  document.getElementById("xoxResult").textContent =
+    message + " +" + points + " puan";
+
+  if (points > 0 && currentPlayer) {
+    try {
+      const response = await fetch("/api/scores", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          game: "xox",
+          score: points
+        })
+      });
+
+      if (response.ok) {
+        await loadRankings();
+      }
+    } catch (error) {
+      console.error("XOX puanı gönderilemedi:", error);
+    }
+  }
+}
 function stopSnake() {
   clearInterval(snakeTimer);
   snakeTimer = null;
