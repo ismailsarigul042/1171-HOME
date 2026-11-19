@@ -528,8 +528,14 @@ if ($('rollDice')) {
     $('diceResult').textContent = 'Gelen sayı: ' + n;
   };
 }
-    $('saveMemo').onclick=()=>{localStorage.setItem('1171_memo',$('memo').value);$('memoStatus').textContent='Kaydedildi';};$('memo').value=localStorage.getItem('1171_memo')||'';
-$('themeBtn').onclick=()=>{document.body.style.filter=document.body.style.filter?'':'brightness(1.12)';};
+if ($('saveMemo') && $('memo') && $('memoStatus')) {
+  $('saveMemo').onclick = () => {
+    localStorage.setItem('1171_memo', $('memo').value);
+    $('memoStatus').textContent = 'Kaydedildi';
+  };
+  $('memo').value = localStorage.getItem('1171_memo') || '';
+}
+    $('themeBtn').onclick=()=>{document.body.style.filter=document.body.style.filter?'':'brightness(1.12)';};
 
 async function loadTerritoryOverview() {
   const box = document.getElementById("territoryOverview");
