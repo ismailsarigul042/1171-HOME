@@ -316,14 +316,6 @@ function setLanguage(lang) {
   document.getElementById("langEN").style.borderColor =
     lang === "en" ? "#d8b66a" : "";
 }
-  localStorage.setItem("1171_language", lang);
-
-  document.getElementById("langTR").style.borderColor =
-    lang === "tr" ? "#d8b66a" : "";
-
-  document.getElementById("langEN").style.borderColor =
-    lang === "en" ? "#d8b66a" : "";
-}
 
 document.getElementById("langTR").onclick = () => setLanguage("tr");
 document.getElementById("langEN").onclick = () => setLanguage("en");
