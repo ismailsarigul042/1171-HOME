@@ -322,6 +322,9 @@ document.getElementById("langTR").onclick = () => setLanguage("tr");
 document.getElementById("langEN").onclick = () => setLanguage("en");
 
 setLanguage(currentLang);
+    document.querySelectorAll("#rally p.notice[data-tr][data-en]").forEach(el => {
+  el.textContent = el.getAttribute("data-" + currentLang);
+});
 
 async function checkUserRole() {
   try {
