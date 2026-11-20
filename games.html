@@ -632,7 +632,7 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
   <p class="muted">Geçmiş haftaların şampiyonları ve başarı arşivi burada yer alacak.</p>
   <p style="color:#f5cb55">Haftalık şampiyonlar arşivi yakında açılıyor!</p>
 </section>
-
+</div>
 </main>
 
 <footer>1171 ARCADE • HAVE FUN • 1171 HOME</footer>
@@ -864,6 +864,7 @@ function openSnake() {
 function closeSnake() {
   stopSnake();
   document.getElementById("gameScreen").style.display = "none";
+  document.getElementById("rankingArea").style.display = "block";
   window.scrollTo({top:0,behavior:"smooth"});
 }
 let xoxCells = ["","","","","","","","",""];
