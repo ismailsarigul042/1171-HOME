@@ -136,11 +136,14 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 </article>
 
 </div></section>
-<section class="panel" id="rally"><div class="grid"><article class="card span-8"><div class="card-head"><h3>RALLY SYNC</h3><span class="tag">OPERATIONS</span></div><p style="color:var(--muted)">Ralli / operasyon bilgilerini burada takip edeceğimiz alan.</p><div class="rowform" id="rallyAdminForm" style="display:none">
-  <input class="field" id="rallyName" placeholder="Operasyon adı">
-  <input class="field" id="rallyTime" placeholder="Saat / not">
-  <button class="small-btn" id="addRally">Ekle</button>
-</div><div id="rallyList" style="color:var(--muted);font-size:13px">Henüz operasyon eklenmedi.</div></article><article class="card span-4"><h3>HIZLI NOT</h3><p class="notice">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p></article></div></section>
+<section class="panel" id="rally"><div class="grid"><article class="card span-8"><div class="card-head"><h3 data-tr="RALLY SYNC" data-en="RALLY SYNC">RALLY SYNC</h3><span class="tag">OPERATIONS</span></div><p style="color:var(--muted)" data-tr="Ralli / operasyon bilgilerini burada takip edeceğimiz alan." data-en="This is where rally and operation information will be tracked.">Ralli / operasyon bilgilerini burada takip edeceğimiz alan.</p><div class="rowform" id="rallyAdminForm" style="display:none">
+  <input class="field" id="rallyName" placeholder="Operasyon adı" data-tr-placeholder="Operasyon adı" data-en-placeholder="Operation Name">
+<input class="field" id="rallyTime" placeholder="Saat / not" data-tr-placeholder="Saat / not" data-en-placeholder="Time / Note">
+<button class="small-btn" id="addRally" data-tr="Ekle" data-en="Add">Ekle</button>
+</div>
+<p class="notice" data-tr="Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak." data-en="Rally Sync's detailed matching and scheduling features will be completed based on the reference site's screenshots and workflow.">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p></article>
+    <article class="card span-4"><h3 data-tr="HIZLI NOT" data-en="QUICK NOTE">HIZLI NOT</h3>
+        <p class="notice">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p></article></div></section>
 
 <section class="panel" id="map">
  
@@ -286,9 +289,11 @@ let currentLang = localStorage.getItem("1171_language") || "tr";
 
 function setLanguage(lang) {
   currentLang = lang;
-document.querySelectorAll("[data-tr][data-en]").forEach(el => {
-  const translatedText = el.getAttribute("data-" + lang);
-
+document.querySelectorAll("[data-tr][data-en], [data-tr-placeholder][data-en-placeholder]").forEach(el => {
+if (el.hasAttribute("data-tr-placeholder")) {
+  el.placeholder = el.getAttribute("data-" + lang + "-placeholder");
+  return;
+}
   if (el.matches("button")) {
     const firstText = Array.from(el.childNodes).find(
       node => node.nodeType === Node.TEXT_NODE
