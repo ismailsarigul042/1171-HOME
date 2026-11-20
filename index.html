@@ -141,7 +141,8 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 <input class="field" id="rallyTime" placeholder="Saat / not" data-tr-placeholder="Saat / not" data-en-placeholder="Time / Note">
 <button class="small-btn" id="addRally" data-tr="Ekle" data-en="Add">Ekle</button>
 </div>
-<p class="notice" data-tr="Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak." data-en="Rally Sync's detailed matching and scheduling features will be completed based on the reference site's screenshots and workflow.">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p></article>
+<p class="notice" data-tr="Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak." data-en="Rally Sync's detailed matching and scheduling features will be completed based on the reference site's screenshots and workflow.">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p>
+</article>
     <article class="card span-4"><h3 data-tr="HIZLI NOT" data-en="QUICK NOTE">HIZLI NOT</h3>
         <p class="notice">Rally Sync'in ayrıntılı eşleştirme ve zamanlama işlevleri, referans sitenin ekran görüntüleri ve kullanım akışı doğrultusunda tamamlanacak.</p></article></div></section>
 
@@ -501,7 +502,7 @@ function renderRallies() {
         }
       </div>
     `).join('')
-    : 'Henüz operasyon eklenmedi.';
+: (currentLang === 'en' ? 'No operations have been added yet.' : 'Henüz operasyon eklenmedi.');
 }
 
 async function loadRallies() {
@@ -515,8 +516,9 @@ async function loadRallies() {
     rallies = await response.json();
     renderRallies();
   } catch (error) {
-    $('rallyList').textContent = 'Operasyonlar yüklenemedi. Sayfayı yenileyin.';
-  }
+$('rallyList').textContent = currentLang === 'en'
+  ? 'Failed to load operations. Please refresh the page.'
+  : 'Operasyonlar yüklenemedi. Sayfayı yenileyin.';  }
 }
 
 $('addRally').onclick = async () => {
