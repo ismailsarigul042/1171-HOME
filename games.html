@@ -617,26 +617,40 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
   <section id="quizScreen" style="display:none;text-align:center">
   <h2 style="color:#f5cb55">❓ 1171 BİLGİ YARIŞMASI</h2>
 
-  <h3 id="quizProgress">SORU 1 / 10</h3>
-  <h2 id="quizQuestion">Yarışmaya hazır mısın?</h2>
-
-  <div id="quizAnswers" class="controls">
-    <button onclick="answerQuiz(0)">A</button>
-    <button onclick="answerQuiz(1)">B</button>
-    <button onclick="answerQuiz(2)">C</button>
-    <button onclick="answerQuiz(3)">D</button>
+  <div id="quizDifficulty">
+    <h3>ZORLUK SEVİYESİNİ SEÇ</h3>
+    <div class="controls">
+      <button onclick="startQuiz('easy')">🟢 KOLAY</button>
+      <button onclick="startQuiz('medium')">🟡 ORTA</button>
+      <button onclick="startQuiz('hard')">🔴 ZOR</button>
+    </div>
   </div>
 
-  <h3 id="quizStatus">Cevabını seç!</h3>
-  <h3>PUAN: <span id="quizScore">0</span></h3>
+  <div id="quizGame" style="display:none">
+    <h3 id="quizProgress">SORU 1 / 10</h3>
+    <h2 id="quizQuestion"></h2>
+    <h2 id="quizTimer" style="color:#f5cb55">⏱️ 10</h2>
 
-  <div class="controls">
-    <button id="quizNext" onclick="nextQuizQuestion()" style="display:none">
-      SONRAKİ SORU
-    </button>
-    <button onclick="startQuiz()">YENİDEN BAŞLA</button>
-    <button onclick="closeQuiz()">OYUNLARA DÖN</button>
+    <div id="quizAnswers" class="controls">
+      <button onclick="answerQuiz(0)">A</button>
+      <button onclick="answerQuiz(1)">B</button>
+      <button onclick="answerQuiz(2)">C</button>
+      <button onclick="answerQuiz(3)">D</button>
+    </div>
+
+    <h3 id="quizStatus">Cevabını seç!</h3>
+    <h3>PUAN: <span id="quizScore">0</span></h3>
+
+    <div class="controls">
+      <button id="quizNext" onclick="nextQuizQuestion()" style="display:none">
+        SONRAKİ SORU
+      </button>
+      <button onclick="startQuiz(quizDifficulty)">YENİDEN BAŞLA</button>
+      <button onclick="closeQuiz()">OYUNLARA DÖN</button>
+    </div>
   </div>
+
+  <button onclick="closeQuiz()">OYUNLARA DÖN</button>
 </section>
   <div id="rankingArea">
     <div id="rankingList">
@@ -1689,92 +1703,92 @@ async function makeGuess() {
     console.error("Sayı tahmini puanı gönderilemedi:", error);
   }
 }
-  const quizQuestions = [
-  {
-    q: "Türkiye Cumhuriyeti hangi yıl kurulmuştur?",
-    a: ["1920", "1923", "1925", "1930"],
-    c: 1
-  },
-  {
-    q: "Dünyanın en büyük okyanusu hangisidir?",
-    a: ["Atlas", "Hint", "Pasifik", "Arktik"],
-    c: 2
-  },
-  {
-    q: "Bir yılda kaç ay vardır?",
-    a: ["10", "11", "12", "13"],
-    c: 2
-  },
-  {
-    q: "Güneş hangi yönden doğar?",
-    a: ["Batı", "Doğu", "Kuzey", "Güney"],
-    c: 1
-  },
-  {
-    q: "Türkiye'nin başkenti neresidir?",
-    a: ["İstanbul", "İzmir", "Konya", "Ankara"],
-    c: 3
-  },
-  {
-    q: "En küçük asal sayı kaçtır?",
-    a: ["1", "2", "3", "5"],
-    c: 1
-  },
-  {
-    q: "İstiklal Marşı'nın yazarı kimdir?",
-    a: ["Namık Kemal", "Mehmet Akif Ersoy", "Yahya Kemal", "Tevfik Fikret"],
-    c: 1
-  },
-  {
-    q: "Dünya'nın doğal uydusu hangisidir?",
-    a: ["Mars", "Güneş", "Ay", "Venüs"],
-    c: 2
-  },
-  {
-    q: "Su kaç derecede donar?",
-    a: ["0°C", "10°C", "50°C", "100°C"],
-    c: 0
-  },
-  {
-    q: "Türkiye'nin en uzun nehri hangisidir?",
-    a: ["Fırat", "Kızılırmak", "Sakarya", "Dicle"],
-    c: 1
-  }
-];
+ const quizQuestions = {
+  easy: [
+    {q:"Türkiye'nin başkenti neresidir?",a:["İstanbul","Ankara","İzmir","Konya"],c:1},
+    {q:"Bir haftada kaç gün vardır?",a:["5","6","7","8"],c:2},
+    {q:"Güneş hangi yönden doğar?",a:["Batı","Doğu","Kuzey","Güney"],c:1},
+    {q:"Bir yılda kaç ay vardır?",a:["10","11","12","13"],c:2},
+    {q:"Türkiye'nin para birimi nedir?",a:["Euro","Dolar","Lira","Sterlin"],c:2},
+    {q:"Dünyanın doğal uydusu hangisidir?",a:["Mars","Ay","Güneş","Venüs"],c:1},
+    {q:"En küçük asal sayı kaçtır?",a:["1","2","3","5"],c:1},
+    {q:"Su kaç derecede donar?",a:["0°C","10°C","50°C","100°C"],c:0},
+    {q:"İstiklal Marşı'nın yazarı kimdir?",a:["Mehmet Akif Ersoy","Namık Kemal","Yahya Kemal","Orhan Veli"],c:0},
+    {q:"Türkiye Cumhuriyeti hangi yıl kurulmuştur?",a:["1920","1923","1930","1938"],c:1}
+  ],
+
+  medium: [
+    {q:"Türkiye'nin en uzun nehri hangisidir?",a:["Fırat","Kızılırmak","Sakarya","Dicle"],c:1},
+    {q:"Osmanlı Devleti hangi yıl kurulmuştur?",a:["1071","1299","1453","1517"],c:1},
+    {q:"Dünyanın en büyük okyanusu hangisidir?",a:["Atlas","Hint","Pasifik","Arktik"],c:2},
+    {q:"Işık hızı yaklaşık kaç km/s'dir?",a:["30.000","150.000","300.000","500.000"],c:2},
+    {q:"Türkiye'nin en yüksek dağı hangisidir?",a:["Erciyes","Ağrı","Uludağ","Kaçkar"],c:1},
+    {q:"Periyodik tabloda O hangi elementi gösterir?",a:["Altın","Oksijen","Gümüş","Demir"],c:1},
+    {q:"İlk Türk devletlerinden Göktürklerin yazıtları hangisidir?",a:["Orhun Yazıtları","Nutuk","Divan-ı Hikmet","Kutadgu Bilig"],c:0},
+    {q:"Dünya'nın en büyük kıtası hangisidir?",a:["Afrika","Avrupa","Asya","Amerika"],c:2},
+    {q:"Türkiye kaç coğrafi bölgeye ayrılır?",a:["5","6","7","8"],c:2},
+    {q:"Mimar Sinan'ın ustalık eseri hangisidir?",a:["Süleymaniye","Selimiye","Şehzade","Sultanahmet"],c:1}
+  ],
+
+  hard: [
+    {q:"Osmanlı Devleti'nin ilk anayasasının adı nedir?",a:["Kanun-i Esasi","Sened-i İttifak","Tanzimat","Islahat"],c:0},
+    {q:"DNA'nın çift sarmal modelini açıklayan bilim insanları kimlerdir?",a:["Newton ve Einstein","Watson ve Crick","Darwin ve Mendel","Curie ve Bohr"],c:1},
+    {q:"Matematikte asal sayıların sonsuz olduğunu kanıtlayan kimdir?",a:["Öklid","Pisagor","Arşimet","Gauss"],c:0},
+    {q:"Türkiye'nin ilk kadın savaş pilotu kimdir?",a:["Halide Edip","Sabiha Gökçen","Safiye Ali","Afet İnan"],c:1},
+    {q:"Periyodik tabloda atom numarası 79 olan element hangisidir?",a:["Gümüş","Platin","Altın","Bakır"],c:2},
+    {q:"Lozan Antlaşması hangi yıl imzalanmıştır?",a:["1919","1920","1923","1924"],c:2},
+    {q:"Işığın boşluktaki hızı saniyede yaklaşık kaç metredir?",a:["30 milyon","300 milyon","3 milyar","30 milyar"],c:1},
+    {q:"Hücrede enerji üretiminden sorumlu organel hangisidir?",a:["Ribozom","Lizozom","Mitokondri","Golgi"],c:2},
+    {q:"E=mc² formülü hangi bilim insanına aittir?",a:["Newton","Einstein","Tesla","Bohr"],c:1},
+    {q:"Türkiye'nin ilk yerli otomobili Devrim hangi yıl üretilmiştir?",a:["1957","1961","1965","1970"],c:1}
+  ]
+};
 
 let quizIndex = 0;
 let quizPoints = 0;
 let quizAnswered = false;
+let quizDifficulty = "easy";
+let quizTimer = null;
+let quizTimeLeft = 10;
 
 function openQuiz() {
   showGame("quizScreen");
-  startQuiz();
+  document.getElementById("quizDifficulty").style.display = "block";
+  document.getElementById("quizGame").style.display = "none";
 }
 
 function closeQuiz() {
+  clearInterval(quizTimer);
   document.getElementById("quizScreen").style.display = "none";
   document.getElementById("rankingArea").style.display = "block";
   window.scrollTo({top:0, behavior:"smooth"});
 }
 
-function startQuiz() {
+function startQuiz(level = "easy") {
+  clearInterval(quizTimer);
+
+  quizDifficulty = level;
   quizIndex = 0;
   quizPoints = 0;
   quizAnswered = false;
 
+  document.getElementById("quizDifficulty").style.display = "none";
+  document.getElementById("quizGame").style.display = "block";
   document.getElementById("quizScore").textContent = "0";
   document.getElementById("quizStatus").textContent = "Cevabını seç!";
   document.getElementById("quizAnswers").style.display = "flex";
-  document.getElementById("quizNext").style.display = "none";
 
   showQuizQuestion();
 }
 
 function showQuizQuestion() {
-  const question = quizQuestions[quizIndex];
+  clearInterval(quizTimer);
+
+  const questions = quizQuestions[quizDifficulty];
+  const question = questions[quizIndex];
 
   document.getElementById("quizProgress").textContent =
-    "SORU " + (quizIndex + 1) + " / " + quizQuestions.length;
+    "SORU " + (quizIndex + 1) + " / " + questions.length;
 
   document.getElementById("quizQuestion").textContent = question.q;
 
@@ -1783,39 +1797,74 @@ function showQuizQuestion() {
   buttons.forEach((button, index) => {
     button.textContent =
       ["A) ", "B) ", "C) ", "D) "][index] + question.a[index];
-
     button.disabled = false;
   });
 
   document.getElementById("quizNext").style.display = "none";
+
   quizAnswered = false;
+  quizTimeLeft = 10;
+
+  updateQuizTimer();
+
+  quizTimer = setInterval(() => {
+    quizTimeLeft--;
+    updateQuizTimer();
+
+    if (quizTimeLeft <= 0) {
+      clearInterval(quizTimer);
+      quizAnswered = true;
+
+      document.querySelectorAll("#quizAnswers button").forEach(button => {
+        button.disabled = true;
+      });
+
+      document.getElementById("quizStatus").textContent =
+        "⏰ Süre doldu! Doğru cevap: " + question.a[question.c];
+
+      document.getElementById("quizNext").style.display = "inline-block";
+    }
+  }, 1000);
+}
+
+function updateQuizTimer() {
+  document.getElementById("quizTimer").textContent =
+    "⏱️ " + quizTimeLeft;
 }
 
 function answerQuiz(answer) {
   if (quizAnswered) return;
 
   quizAnswered = true;
+  clearInterval(quizTimer);
 
-  const question = quizQuestions[quizIndex];
-  const buttons = document.querySelectorAll("#quizAnswers button");
+  const question = quizQuestions[quizDifficulty][quizIndex];
 
-  buttons.forEach(button => button.disabled = true);
+  document.querySelectorAll("#quizAnswers button").forEach(button => {
+    button.disabled = true;
+  });
+
+  const pointsByLevel = {
+    easy: 5,
+    medium: 10,
+    hard: 20
+  };
 
   if (answer === question.c) {
-    quizPoints += 10;
+    quizPoints += pointsByLevel[quizDifficulty];
+
     document.getElementById("quizStatus").textContent =
-      "✅ DOĞRU CEVAP! +10 PUAN";
+      "✅ DOĞRU CEVAP! +" + pointsByLevel[quizDifficulty] + " PUAN";
   } else {
     document.getElementById("quizStatus").textContent =
       "❌ Yanlış cevap! Doğru cevap: " + question.a[question.c];
   }
 
   document.getElementById("quizScore").textContent = quizPoints;
-
   document.getElementById("quizNext").style.display = "inline-block";
 
   document.getElementById("quizNext").textContent =
-    quizIndex === quizQuestions.length - 1
+    quizIndex === quizQuestions[quizDifficulty].length - 1
       ? "SONUÇLARI GÖR"
       : "SONRAKİ SORU";
 }
@@ -1823,7 +1872,7 @@ function answerQuiz(answer) {
 async function nextQuizQuestion() {
   if (!quizAnswered) return;
 
-  if (quizIndex < quizQuestions.length - 1) {
+  if (quizIndex < quizQuestions[quizDifficulty].length - 1) {
     quizIndex++;
     showQuizQuestion();
   } else {
@@ -1832,6 +1881,8 @@ async function nextQuizQuestion() {
 }
 
 async function finishQuiz() {
+  clearInterval(quizTimer);
+
   document.getElementById("quizQuestion").textContent =
     "🏆 YARIŞMA TAMAMLANDI!";
 
@@ -1840,6 +1891,7 @@ async function finishQuiz() {
 
   document.getElementById("quizAnswers").style.display = "none";
   document.getElementById("quizNext").style.display = "none";
+  document.getElementById("quizTimer").textContent = "⏱️ BİTTİ";
 
   document.getElementById("quizStatus").textContent =
     "Toplam puanın: " + quizPoints;
