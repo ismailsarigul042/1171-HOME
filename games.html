@@ -628,7 +628,7 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
   </div>
 </section>
 
-<section id="hall" class="rank-box" style="margin-top:18px">
+<section id="hall" class="rank-box" style="margin-top:18px;display:none">
   <h3>🏛 ŞÖHRETLER SALONU</h3>
   <p class="muted">Geçmiş haftaların şampiyonları ve başarı arşivi burada yer alacak.</p>
   <p style="color:#f5cb55">Haftalık şampiyonlar arşivi yakında açılıyor!</p>
@@ -788,8 +788,8 @@ function updateMyStats(data) {
 }
 
 function goToRankings() {
-  document.getElementById("rankingArea").style.display = "block";
-
+document.getElementById("rankingArea").style.display = "block";
+document.getElementById("hall").style.display = "none";
   setTimeout(() => {
     document.getElementById("rankings").scrollIntoView({
       behavior: "smooth"
@@ -799,6 +799,8 @@ function goToRankings() {
 
 function goToHall() {
   document.getElementById("rankingArea").style.display = "block";
+  document.getElementById("rankingList").style.display = "none";
+  document.getElementById("hall").style.display = "block";
 
   setTimeout(() => {
     document.getElementById("hall").scrollIntoView({
