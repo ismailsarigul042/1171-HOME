@@ -787,15 +787,23 @@ function updateMyStats(data) {
 }
 
 function goToRankings() {
-  document.getElementById("rankings").scrollIntoView({
-    behavior:"smooth"
-  });
+  document.getElementById("rankingArea").style.display = "block";
+
+  setTimeout(() => {
+    document.getElementById("rankings").scrollIntoView({
+      behavior: "smooth"
+    });
+  }, 100);
 }
 
 function goToHall() {
-  document.getElementById("hall").scrollIntoView({
-    behavior:"smooth"
-  });
+  document.getElementById("rankingArea").style.display = "block";
+
+  setTimeout(() => {
+    document.getElementById("hall").scrollIntoView({
+      behavior: "smooth"
+    });
+  }, 100);
 }
 
 function comingSoon() {
