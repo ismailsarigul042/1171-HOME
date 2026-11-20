@@ -857,13 +857,38 @@ let score = 0;
 let snakeTimer = null;
 let snakeRunning = false;
 let scoreSent = false;
+function showGame(screenId) {
+  const screens = [
+    "gameScreen",
+    "xoxScreen",
+    "minesScreen",
+    "memoryScreen",
+    "reflexScreen",
+    "rpsScreen",
+    "guessScreen",
+    "quizScreen"
+  ];
 
-function openSnake() {
-  document.getElementById("rankingArea").style.display = "none";
-  document.getElementById("gameScreen").style.display = "block";
-  document.getElementById("gameScreen").scrollIntoView({
-    behavior:"smooth"
+  screens.forEach(id => {
+    const screen = document.getElementById(id);
+    if (screen) screen.style.display = "none";
   });
+
+  document.getElementById("rankingArea").style.display = "none";
+
+  stopSnake();
+  clearTimeout(reflexTimer);
+  reflexState = "idle";
+
+  const selected = document.getElementById(screenId);
+  if (selected) {
+    selected.style.display = "block";
+    selected.scrollIntoView({ behavior: "smooth" });
+  }
+}
+function openSnake() {
+  showGame("gameScreen");
+  startSnake();
 }
 
 function closeSnake() {
@@ -877,18 +902,9 @@ let xoxFinished = false;
 let xoxBusy = false;
 
 function openXox() {
-  document.getElementById("rankingArea").style.display = "none";
-  document.getElementById("gameScreen").style.display = "none";
-  document.getElementById("xoxScreen").style.display = "block";
-  document.getElementById("minesScreen").style.display = "none";
-
-  document.getElementById("xoxScreen").scrollIntoView({
-    behavior: "smooth"
-  });
-
+  showGame("xoxScreen");
   startXox();
 }
-
 function closeXox() {
   document.getElementById("rankingArea").style.display = "block";
   document.getElementById("xoxScreen").style.display = "none";
@@ -1034,15 +1050,7 @@ const MINES_COUNT = 15;
 const MINES_SIZE = 100;
 
 function openMines() {
-  document.getElementById("rankingArea").style.display = "none";
-  document.getElementById("gameScreen").style.display = "none";
-  document.getElementById("xoxScreen").style.display = "none";
-  document.getElementById("minesScreen").style.display = "block";
-
-  document.getElementById("minesScreen").scrollIntoView({
-    behavior: "smooth"
-  });
-
+  showGame("minesScreen");
   startMines();
 }
 
@@ -1242,16 +1250,7 @@ let memoryMatched = 0;
 const memorySymbols = ["⚔️","🛡️","👑","🏰","🐉","💎","🔥","🌙"];
 
 function openMemory() {
-  document.getElementById("rankingArea").style.display = "none";
-  document.getElementById("gameScreen").style.display = "none";
-  document.getElementById("xoxScreen").style.display = "none";
-  document.getElementById("minesScreen").style.display = "none";
-  document.getElementById("memoryScreen").style.display = "block";
-
-  document.getElementById("memoryScreen").scrollIntoView({
-    behavior: "smooth"
-  });
-
+  showGame("memoryScreen");
   startMemory();
 }
 
@@ -1395,17 +1394,7 @@ let reflexState = "idle";
 let reflexScoreValue = 0;
 
 function openReflex() {
-  document.getElementById("rankingArea").style.display = "none";
-  document.getElementById("gameScreen").style.display = "none";
-  document.getElementById("xoxScreen").style.display = "none";
-  document.getElementById("minesScreen").style.display = "none";
-  document.getElementById("memoryScreen").style.display = "none";
-  document.getElementById("reflexScreen").style.display = "block";
-
-  document.getElementById("reflexScreen").scrollIntoView({
-    behavior: "smooth"
-  });
-
+  showGame("reflexScreen");
   startReflex();
 }
 
@@ -1504,18 +1493,7 @@ let rpsLosses = 0;
 let rpsTotalScore = 0;
 
 function openRps() {
-  document.getElementById("rankingArea").style.display = "none";
-  document.getElementById("gameScreen").style.display = "none";
-  document.getElementById("xoxScreen").style.display = "none";
-  document.getElementById("minesScreen").style.display = "none";
-  document.getElementById("memoryScreen").style.display = "none";
-  document.getElementById("reflexScreen").style.display = "none";
-  document.getElementById("rpsScreen").style.display = "block";
-
-  document.getElementById("rpsScreen").scrollIntoView({
-    behavior: "smooth"
-  });
-
+  showGame("rpsScreen");
   resetRps();
 }
 
@@ -1608,19 +1586,7 @@ let guessCount = 0;
 let guessFinished = false;
 
 function openGuess() {
-  document.getElementById("rankingArea").style.display = "none";
-  document.getElementById("gameScreen").style.display = "none";
-  document.getElementById("xoxScreen").style.display = "none";
-  document.getElementById("minesScreen").style.display = "none";
-  document.getElementById("memoryScreen").style.display = "none";
-  document.getElementById("reflexScreen").style.display = "none";
-  document.getElementById("rpsScreen").style.display = "none";
-  document.getElementById("guessScreen").style.display = "block";
-
-  document.getElementById("guessScreen").scrollIntoView({
-    behavior: "smooth"
-  });
-
+  showGame("guessScreen");
   startGuess();
 }
 
