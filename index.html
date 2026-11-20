@@ -289,20 +289,33 @@ let currentLang = localStorage.getItem("1171_language") || "tr";
 
 function setLanguage(lang) {
   currentLang = lang;
-document.querySelectorAll("[data-tr][data-en], [data-tr-placeholder][data-en-placeholder]").forEach(el => {
-if (el.hasAttribute("data-tr-placeholder")) {
-  el.placeholder = el.getAttribute("data-" + lang + "-placeholder");
-  return;
+  localStorage.setItem("1171_language", lang);
+
+  document.querySelectorAll("[data-tr][data-en], [data-tr-placeholder][data-en-placeholder]").forEach(el => {
+
+    if (el.hasAttribute("data-tr-placeholder")) {
+      el.placeholder = el.getAttribute("data-" + lang + "-placeholder");
+      return;
+    }
+
+    const translatedText = el.getAttribute("data-" + lang);
+
+    if (el.matches("button")) {
+      const firstText = Array.from(el.childNodes).find(
+        node => node.nodeType === Node.TEXT_NODE
+      );
+      if (firstText) firstText.nodeValue = translatedText;
+    } else {
+      el.textContent = translatedText;
+    }
+  });
+
+  document.getElementById("langTR").style.borderColor =
+    lang === "tr" ? "#d8b66a" : "";
+
+  document.getElementById("langEN").style.borderColor =
+    lang === "en" ? "#d8b66a" : "";
 }
-  if (el.matches("button")) {
-    const firstText = Array.from(el.childNodes).find(
-      node => node.nodeType === Node.TEXT_NODE
-    );
-    if (firstText) firstText.nodeValue = translatedText;
-  } else {
-    el.textContent = translatedText;
-  }
-});
   localStorage.setItem("1171_language", lang);
 
   document.getElementById("langTR").style.borderColor =
