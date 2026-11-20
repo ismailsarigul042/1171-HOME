@@ -615,6 +615,7 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
   <h3>PUAN: <span id="guessScore">0</span></h3>
 </section>
   <div id="rankingArea">
+    <div id="rankingList">
 <h2 class="section-title" id="rankings">🏆 GENEL SIRALAMA</h2>
 
 <section class="rank-grid">
@@ -627,7 +628,7 @@ footer { text-align:center; color:#a99dbf; padding:25px; font-size:12px; }
     <div id="allianceRanking">Sıralama yükleniyor...</div>
   </div>
 </section>
-
+    </div>
 <section id="hall" class="rank-box" style="margin-top:18px;display:none">
   <h3>🏛 ŞÖHRETLER SALONU</h3>
   <p class="muted">Geçmiş haftaların şampiyonları ve başarı arşivi burada yer alacak.</p>
@@ -789,6 +790,7 @@ function updateMyStats(data) {
 
 function goToRankings() {
 document.getElementById("rankingArea").style.display = "block";
+  document.getElementById("rankingList").style.display = "block";
 document.getElementById("hall").style.display = "none";
   setTimeout(() => {
     document.getElementById("rankings").scrollIntoView({
