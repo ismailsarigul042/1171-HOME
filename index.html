@@ -102,7 +102,9 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
   <button class="ghost" id="logoutBtn">⏻ Çıkış</button>
 </div>
 </header>
-<section class="hero"><div class="eyebrow">WELCOME BACK · 1171</div><h2>Operasyon Merkezi</h2><p>Tüm yönetim araçların tek bir merkezde.</p></section>
+<h2 data-tr="Operasyon Merkezi" data-en="Operations Center">Operasyon Merkezi</h2>
+<p data-tr="Tüm yönetim araçların tek bir merkezde." data-en="All your management tools in one central hub.">Tüm yönetim araçların tek bir merkezde.</p>
+</section>
 <nav class="tabs" id="tabs">
 <button class="tab active" data-panel="dashboard" data-tr="⌂ Genel Bakış" data-en="⌂ Overview">⌂ Genel Bakış</button>
 <button class="tab" data-panel="admin" data-tr="♛ 1171 Admin" data-en="♛ 1171 Admin">♛ 1171 Admin</button>
@@ -112,10 +114,10 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 <button class="tab" data-panel="fun" data-tr="✧ Eğlence" data-en="✧ Fun">✧ Eğlence</button>
 </nav>
 <section class="panel active" id="dashboard"><div class="grid">
- <article class="card span-8"><div class="card-head"><h3>SİSTEM DURUMU</h3><span class="tag">LIVE PANEL</span></div><div class="stat-row"><div class="stat"><b id="memberCount">0</b><small>Kayıtlı oyuncu</small></div><div class="stat"><b>1171</b><small>Merkez kodu</small></div><div class="stat"><b>ONLINE</b><small>Yerel oturum</small></div></div><p class="notice" style="margin-top:14px">Hoş geldin. Sol menüden modüller arasında geçiş yapabilirsin. Veriler bu prototipte kullandığın tarayıcıda saklanır.</p></article>
- <article class="card span-4"><div class="card-head"><h3>HIZLI ERİŞİM</h3></div><div class="quick"><button data-go="roster">♜ Kadro yönetimi<span>Oyuncu ekle / düzenle</span></button><button data-go="map">⌖ Harita<span>Konum alanı</span></button><button data-go="rally">⚔ Rally Sync<span>Operasyon paneli</span></button><button data-go="admin">♛ Yönetim<span>Genel araçlar</span></button></div></article>
- <article class="card span-6"><div class="card-head"><h3>SON AKTİVİTE</h3><span class="tag">LOCAL</span></div><div id="activity" style="color:var(--muted);font-size:13px">Henüz aktivite yok.</div></article>
- <article class="card span-6"><div class="card-head"><h3>1171 NOTU</h3></div><p style="color:var(--muted);margin:0">Bu alan duyurular, önemli koordinatlar ve ekip notları için kullanılabilir.</p></article>
+ <article class="card span-8"><div class="card-head"><h3 data-tr="SİSTEM DURUMU" data-en="SYSTEM STATUS">SİSTEM DURUMU</h3><span class="tag">LIVE PANEL</span></div><div class="stat-row"><div class="stat"><b id="memberCount">0</b><small>Kayıtlı oyuncu</small></div><div class="stat"><b>1171</b><small>Merkez kodu</small></div><div class="stat"><b>ONLINE</b><small>Yerel oturum</small></div></div><p class="notice" style="margin-top:14px">Hoş geldin. Sol menüden modüller arasında geçiş yapabilirsin. Veriler bu prototipte kullandığın tarayıcıda saklanır.</p></article>
+ <article class="card span-4"><div class="card-head"><h3 data-tr="HIZLI ERİŞİM" data-en="QUICK ACCESS">HIZLI ERİŞİM</h3></div><div class="quick"><button data-go="roster">♜ Kadro yönetimi<span>Oyuncu ekle / düzenle</span></button><button data-go="map">⌖ Harita<span>Konum alanı</span></button><button data-go="rally">⚔ Rally Sync<span>Operasyon paneli</span></button><button data-go="admin">♛ Yönetim<span>Genel araçlar</span></button></div></article>
+ <article class="card span-6"><div class="card-head"><h3 data-tr="SON AKTİVİTE" data-en="RECENT ACTIVITY">SON AKTİVİTE</h3><span class="tag">LOCAL</span></div><div id="activity" style="color:var(--muted);font-size:13px">Henüz aktivite yok.</div></article>
+ <article class="card span-6"><div class="card-head"><h3 data-tr="1171 NOTU" data-en="1171 NOTES">1171 NOTU</h3></div><p style="color:var(--muted);margin:0">Bu alan duyurular, önemli koordinatlar ve ekip notları için kullanılabilir.</p></article>
  </div></section>
 <section class="panel" id="admin"><div class="grid">
  <article class="card span-6"><div class="card-head"><h3>YÖNETİM ARAÇLARI</h3><span class="tag">ADMIN</span></div><div class="quick"><button data-go="roster">Oyuncu yönetimi<span>Kadro kayıtları</span></button><button data-go="map">Harita modülü<span>Koordinat çalışma alanı</span></button><button data-go="rally">Rally Sync<span>Operasyon senkronu</span></button><button id="exportAdmin">CSV dışa aktar<span>Kadro listesini indir</span></button></div></article>
