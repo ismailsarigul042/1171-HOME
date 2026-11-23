@@ -20,3 +20,7 @@ Bu, GitHub Pages gibi statik barındırmada çalışabilen bir ön yüz prototip
 
 ## Yayınlama
 GitHub hesabı oluşturduktan sonra bu dosyaları bir depoya yükleyip GitHub Pages'i etkinleştirebiliriz. Gerçek erişim korumasını ayrıca kuracağız.
+
+
+## Etkinlik katılım tablosu
+Cloudflare D1 veritabanında `attendance-table.sql` içeriğini Console bölümünde bir kez çalıştırın. Katılım bildirmek için üyelerin 1171 ARENA bölümünde oyuncu PIN hesaplarıyla giriş yapmış olması gerekir. Katılım API uç noktası `/api/attendance` adresidir.
