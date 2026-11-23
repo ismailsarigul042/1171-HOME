@@ -363,6 +363,49 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
     <strong id="arenaPlayerInfo"></strong>
     <button class="small-btn" id="arenaLogoutBtn" style="float:right" data-tr="ÇIKIŞ" data-en="LOG OUT">ÇIKIŞ</button>
     <p id="arenaMyScore" style="color:var(--muted);margin-top:12px" data-tr="Haftalık puanın: 0" data-en="Your weekly score: 0">Haftalık puanın: 0</p>
+
+    <div id="t11EntryPanel" style="margin-top:16px;padding:14px;border:1px solid var(--gold);border-radius:10px">
+      <h3 data-tr="⚔️ T11 ASKER BİLGİLERİM" data-en="⚔️ MY T11 TROOPS">⚔️ T11 ASKER BİLGİLERİM</h3>
+      <p style="color:var(--muted);font-size:13px" data-tr="Kendi T11 asker sayılarını gir. Yalnızca kendi kayıtlarını güncelleyebilirsin." data-en="Enter your T11 troop counts. You can update only your own record.">Kendi T11 asker sayılarını gir. Yalnızca kendi kayıtlarını güncelleyebilirsin.</p>
+      <div class="grid" style="margin-top:10px">
+        <div class="span-4">
+          <label for="t11Infantry" data-tr="🛡️ T11 Piyade" data-en="🛡️ T11 Infantry">🛡️ T11 Piyade</label>
+          <input id="t11Infantry" class="field" type="number" min="0" max="1000000000" step="1" value="0" inputmode="numeric">
+        </div>
+        <div class="span-4">
+          <label for="t11Cavalry" data-tr="🐎 T11 Süvari" data-en="🐎 T11 Cavalry">🐎 T11 Süvari</label>
+          <input id="t11Cavalry" class="field" type="number" min="0" max="1000000000" step="1" value="0" inputmode="numeric">
+        </div>
+        <div class="span-4">
+          <label for="t11Archer" data-tr="🏹 T11 Okçu" data-en="🏹 T11 Archers">🏹 T11 Okçu</label>
+          <input id="t11Archer" class="field" type="number" min="0" max="1000000000" step="1" value="0" inputmode="numeric">
+        </div>
+      </div>
+      <button class="gold-btn" id="saveT11Btn" type="button" style="margin-top:12px" data-tr="T11 BİLGİLERİMİ KAYDET" data-en="SAVE MY T11 COUNTS">T11 BİLGİLERİMİ KAYDET</button>
+      <p id="t11Message" style="font-size:12px;margin-bottom:0"></p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="card-head">
+      <h3 data-tr="🏆 1171 T11 ASKER SIRALAMASI" data-en="🏆 1171 T11 TROOP RANKING">🏆 1171 T11 ASKER SIRALAMASI</h3>
+      <button class="small-btn" id="refreshT11Btn" type="button" data-tr="↻ Yenile" data-en="↻ Refresh">↻ Yenile</button>
+    </div>
+    <p style="color:var(--muted);font-size:13px" data-tr="Oyuncuların paylaştığı T11 sayıları toplam askere göre sıralanır." data-en="Players' submitted T11 counts are ranked by total troops.">Oyuncuların paylaştığı T11 sayıları toplam askere göre sıralanır.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th data-tr="#" data-en="#">#</th>
+          <th data-tr="OYUNCU" data-en="PLAYER">OYUNCU</th>
+          <th data-tr="🛡️ PİYADE" data-en="🛡️ INFANTRY">🛡️ PİYADE</th>
+          <th data-tr="🐎 SÜVARİ" data-en="🐎 CAVALRY">🐎 SÜVARİ</th>
+          <th data-tr="🏹 OKÇU" data-en="🏹 ARCHERS">🏹 OKÇU</th>
+          <th data-tr="TOPLAM T11" data-en="TOTAL T11">TOPLAM T11</th>
+        </tr></thead>
+        <tbody id="t11RankingBody"><tr><td colspan="6" style="color:#888" data-tr="Yükleniyor..." data-en="Loading...">Yükleniyor...</td></tr></tbody>
+      </table>
+    </div>
+    <p id="t11RankingNote" style="font-size:12px;color:var(--muted);margin-bottom:0"></p>
   </div>
 </div>
 
@@ -1145,6 +1188,80 @@ refreshTerritoryLabels();
       player.name + " | " + player.alliance;
 
     $a("arenaMyScore").textContent = "Haftalık puanın: 0";
+    loadT11();
+  }
+
+  function formatT11(value) {
+    return Number(value || 0).toLocaleString(currentLang === "en" ? "en-US" : "tr-TR");
+  }
+
+  async function loadT11() {
+    try {
+      const data = await arenaRequest("/api/t11");
+      const rows = Array.isArray(data.ranking) ? data.ranking : [];
+      const body = $a("t11RankingBody");
+      if (body) {
+        body.innerHTML = rows.length ? rows.map((row, index) => `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${escapeT11(row.name)}</td>
+            <td>${formatT11(row.infantry)}</td>
+            <td>${formatT11(row.cavalry)}</td>
+            <td>${formatT11(row.archer)}</td>
+            <td><strong>${formatT11(row.total)}</strong></td>
+          </tr>`).join("") : `<tr><td colspan="6" style="color:#888">${currentLang === "en" ? "No T11 records yet." : "Henüz T11 kaydı bulunmuyor."}</td></tr>`;
+      }
+      const note = $a("t11RankingNote");
+      if (note) note.textContent = currentLang === "en"
+        ? "Last updated values are shown. Players can update their own counts after Player PIN login."
+        : "Oyuncular son kaydettikleri sayılarla listelenir. Her oyuncu PIN girişi yaptıktan sonra kendi sayılarını güncelleyebilir.";
+
+      if (data.mine) {
+        $a("t11Infantry").value = data.mine.infantry;
+        $a("t11Cavalry").value = data.mine.cavalry;
+        $a("t11Archer").value = data.mine.archer;
+      }
+      if (!arenaPlayer && $a("t11EntryPanel")) {
+        $a("t11EntryPanel").style.display = "none";
+      } else if ($a("t11EntryPanel")) {
+        $a("t11EntryPanel").style.display = "block";
+      }
+    } catch (error) {
+      const body = $a("t11RankingBody");
+      if (body) body.innerHTML = `<tr><td colspan="6" style="color:#ff7777">${currentLang === "en" ? "T11 ranking could not be loaded." : "T11 sıralaması yüklenemedi."}</td></tr>`;
+      console.error("T11 bilgileri yüklenemedi:", error);
+    }
+  }
+
+  function escapeT11(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[char]));
+  }
+
+  async function saveT11() {
+    if (!arenaPlayer) {
+      arenaMessage("t11Message", currentLang === "en" ? "Log in with your Player PIN first." : "Önce oyuncu PIN'inle giriş yapmalısın.", "#ff7777");
+      return;
+    }
+    const values = {
+      infantry: $a("t11Infantry").value,
+      cavalry: $a("t11Cavalry").value,
+      archer: $a("t11Archer").value
+    };
+    for (const value of Object.values(values)) {
+      if (!/^\d+$/.test(String(value)) || !Number.isSafeInteger(Number(value)) || Number(value) > 1000000000) {
+        arenaMessage("t11Message", currentLang === "en" ? "Enter whole numbers from 0 to 1,000,000,000." : "0 ile 1.000.000.000 arasında tam sayı gir.", "#ff7777");
+        return;
+      }
+    }
+    try {
+      await arenaRequest("/api/t11", { method: "POST", body: JSON.stringify(values) });
+      arenaMessage("t11Message", currentLang === "en" ? "Your T11 counts have been saved." : "T11 asker bilgilerin kaydedildi.", "var(--green)");
+      await loadT11();
+    } catch (error) {
+      arenaMessage("t11Message", error.message, "#ff7777");
+    }
   }
 
   async function arenaRegister() {
@@ -1207,7 +1324,9 @@ refreshTerritoryLabels();
       await arenaRequest("/api/players", { method: "DELETE" });
       arenaPlayer = null;
       $a("arenaPlayerPanel").style.display = "none";
+      if ($a("t11EntryPanel")) $a("t11EntryPanel").style.display = "none";
       arenaMessage("arenaLoginMessage", "Oyuncu oturumu kapatıldı.");
+      await loadT11();
     } catch (error) {
       arenaMessage("arenaLoginMessage", error.message, "#ff7777");
     }
@@ -1227,8 +1346,11 @@ refreshTerritoryLabels();
   $a("arenaRegisterBtn")?.addEventListener("click", arenaRegister);
   $a("arenaLoginBtn")?.addEventListener("click", arenaLogin);
   $a("arenaLogoutBtn")?.addEventListener("click", arenaLogout);
+  $a("saveT11Btn")?.addEventListener("click", saveT11);
+  $a("refreshT11Btn")?.addEventListener("click", loadT11);
 
   arenaCheckLogin();
+  loadT11();
 })();
 
 </script>
