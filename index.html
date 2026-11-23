@@ -127,6 +127,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 <button class="tab" data-panel="events" data-tr="📅 Etkinlik Takvimi" data-en="📅 Event Calendar">📅 Etkinlik Takvimi</button>
 <button class="tab" data-panel="map" data-tr="⌖ Harita" data-en="⌖ Map">⌖ Harita</button>
 <button class="tab" data-panel="roster" data-tr="♜ Battle Roster" data-en="♜ Battle Roster">♜ Battle Roster</button>
+<button class="tab" data-panel="t11" data-tr="⚔️ T11 Asker Takibi" data-en="⚔️ T11 Troop Tracker">⚔️ T11 Asker Takibi</button>
 <button class="tab" data-panel="fun" data-tr="✧ Eğlence" data-en="✧ Fun">✧ Eğlence</button>
 </nav>
 <section class="panel active" id="dashboard"><div class="grid">
@@ -304,6 +305,58 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 
 
   
+<section class="panel" id="t11">
+  <article class="card" style="margin-bottom:18px">
+    <div class="card-head">
+      <h3 data-tr="⚔️ T11 ASKER TAKİBİ" data-en="⚔️ T11 TROOP TRACKER">⚔️ T11 ASKER TAKİBİ</h3>
+      <span class="tag">1171 ARMY</span>
+    </div>
+    <p style="color:var(--muted);font-size:13px" data-tr="Oyuncu PIN'inle giriş yaparak kendi T11 asker sayılarını güncelleyebilirsin. Sıralama tüm üyelere açıktır." data-en="Log in with your Player PIN to update your own T11 troop counts. The ranking is visible to all members.">Oyuncu PIN'inle giriş yaparak kendi T11 asker sayılarını güncelleyebilirsin. Sıralama tüm üyelere açıktır.</p>
+    <div id="t11LoginNotice" style="padding:12px;border:1px solid var(--gold);border-radius:10px;margin-bottom:14px" data-tr="Kendi sayılarını girmek için önce Eğlence bölümündeki 1171 ARENA alanından oyuncu PIN'inle giriş yap." data-en="To enter your counts, first log in with your Player PIN in the 1171 ARENA area under Fun.">Kendi sayılarını girmek için önce Eğlence bölümündeki 1171 ARENA alanından oyuncu PIN'inle giriş yap.</div>
+    <div id="t11EntryPanel" style="margin-top:16px;padding:14px;border:1px solid var(--gold);border-radius:10px">
+      <h3 data-tr="⚔️ T11 ASKER BİLGİLERİM" data-en="⚔️ MY T11 TROOPS">⚔️ T11 ASKER BİLGİLERİM</h3>
+      <p style="color:var(--muted);font-size:13px" data-tr="Kendi T11 asker sayılarını gir. Yalnızca kendi kayıtlarını güncelleyebilirsin." data-en="Enter your T11 troop counts. You can update only your own record.">Kendi T11 asker sayılarını gir. Yalnızca kendi kayıtlarını güncelleyebilirsin.</p>
+      <div class="grid" style="margin-top:10px">
+        <div class="span-4">
+          <label for="t11Infantry" data-tr="🛡️ T11 Piyade" data-en="🛡️ T11 Infantry">🛡️ T11 Piyade</label>
+          <input id="t11Infantry" class="field" type="number" min="0" max="1000000000" step="1" value="0" inputmode="numeric">
+        </div>
+        <div class="span-4">
+          <label for="t11Cavalry" data-tr="🐎 T11 Süvari" data-en="🐎 T11 Cavalry">🐎 T11 Süvari</label>
+          <input id="t11Cavalry" class="field" type="number" min="0" max="1000000000" step="1" value="0" inputmode="numeric">
+        </div>
+        <div class="span-4">
+          <label for="t11Archer" data-tr="🏹 T11 Okçu" data-en="🏹 T11 Archers">🏹 T11 Okçu</label>
+          <input id="t11Archer" class="field" type="number" min="0" max="1000000000" step="1" value="0" inputmode="numeric">
+        </div>
+      </div>
+      <button class="gold-btn" id="saveT11Btn" type="button" style="margin-top:12px" data-tr="T11 BİLGİLERİMİ KAYDET" data-en="SAVE MY T11 COUNTS">T11 BİLGİLERİMİ KAYDET</button>
+      <p id="t11Message" style="font-size:12px;margin-bottom:0"></p>
+    </div>
+  </article>
+  <div class="card" style="margin-top:16px">
+    <div class="card-head">
+      <h3 data-tr="🏆 1171 T11 ASKER SIRALAMASI" data-en="🏆 1171 T11 TROOP RANKING">🏆 1171 T11 ASKER SIRALAMASI</h3>
+      <button class="small-btn" id="refreshT11Btn" type="button" data-tr="↻ Yenile" data-en="↻ Refresh">↻ Yenile</button>
+    </div>
+    <p style="color:var(--muted);font-size:13px" data-tr="Oyuncuların paylaştığı T11 sayıları toplam askere göre sıralanır." data-en="Players' submitted T11 counts are ranked by total troops.">Oyuncuların paylaştığı T11 sayıları toplam askere göre sıralanır.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th data-tr="#" data-en="#">#</th>
+          <th data-tr="OYUNCU" data-en="PLAYER">OYUNCU</th>
+          <th data-tr="🛡️ PİYADE" data-en="🛡️ INFANTRY">🛡️ PİYADE</th>
+          <th data-tr="🐎 SÜVARİ" data-en="🐎 CAVALRY">🐎 SÜVARİ</th>
+          <th data-tr="🏹 OKÇU" data-en="🏹 ARCHERS">🏹 OKÇU</th>
+          <th data-tr="TOPLAM T11" data-en="TOTAL T11">TOPLAM T11</th>
+        </tr></thead>
+        <tbody id="t11RankingBody"><tr><td colspan="6" style="color:#888" data-tr="Yükleniyor..." data-en="Loading...">Yükleniyor...</td></tr></tbody>
+      </table>
+    </div>
+    <p id="t11RankingNote" style="font-size:12px;color:var(--muted);margin-bottom:0"></p>
+  </div>
+</section>
+
 <section class="panel" id="fun">
 <!-- OYUN MERKEZİ -->
 <article class="card" style="margin-bottom:18px;text-align:center">
@@ -364,49 +417,10 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
     <button class="small-btn" id="arenaLogoutBtn" style="float:right" data-tr="ÇIKIŞ" data-en="LOG OUT">ÇIKIŞ</button>
     <p id="arenaMyScore" style="color:var(--muted);margin-top:12px" data-tr="Haftalık puanın: 0" data-en="Your weekly score: 0">Haftalık puanın: 0</p>
 
-    <div id="t11EntryPanel" style="margin-top:16px;padding:14px;border:1px solid var(--gold);border-radius:10px">
-      <h3 data-tr="⚔️ T11 ASKER BİLGİLERİM" data-en="⚔️ MY T11 TROOPS">⚔️ T11 ASKER BİLGİLERİM</h3>
-      <p style="color:var(--muted);font-size:13px" data-tr="Kendi T11 asker sayılarını gir. Yalnızca kendi kayıtlarını güncelleyebilirsin." data-en="Enter your T11 troop counts. You can update only your own record.">Kendi T11 asker sayılarını gir. Yalnızca kendi kayıtlarını güncelleyebilirsin.</p>
-      <div class="grid" style="margin-top:10px">
-        <div class="span-4">
-          <label for="t11Infantry" data-tr="🛡️ T11 Piyade" data-en="🛡️ T11 Infantry">🛡️ T11 Piyade</label>
-          <input id="t11Infantry" class="field" type="number" min="0" max="1000000000" step="1" value="0" inputmode="numeric">
-        </div>
-        <div class="span-4">
-          <label for="t11Cavalry" data-tr="🐎 T11 Süvari" data-en="🐎 T11 Cavalry">🐎 T11 Süvari</label>
-          <input id="t11Cavalry" class="field" type="number" min="0" max="1000000000" step="1" value="0" inputmode="numeric">
-        </div>
-        <div class="span-4">
-          <label for="t11Archer" data-tr="🏹 T11 Okçu" data-en="🏹 T11 Archers">🏹 T11 Okçu</label>
-          <input id="t11Archer" class="field" type="number" min="0" max="1000000000" step="1" value="0" inputmode="numeric">
-        </div>
-      </div>
-      <button class="gold-btn" id="saveT11Btn" type="button" style="margin-top:12px" data-tr="T11 BİLGİLERİMİ KAYDET" data-en="SAVE MY T11 COUNTS">T11 BİLGİLERİMİ KAYDET</button>
-      <p id="t11Message" style="font-size:12px;margin-bottom:0"></p>
-    </div>
+    
   </div>
 
-  <div class="card" style="margin-top:16px">
-    <div class="card-head">
-      <h3 data-tr="🏆 1171 T11 ASKER SIRALAMASI" data-en="🏆 1171 T11 TROOP RANKING">🏆 1171 T11 ASKER SIRALAMASI</h3>
-      <button class="small-btn" id="refreshT11Btn" type="button" data-tr="↻ Yenile" data-en="↻ Refresh">↻ Yenile</button>
-    </div>
-    <p style="color:var(--muted);font-size:13px" data-tr="Oyuncuların paylaştığı T11 sayıları toplam askere göre sıralanır." data-en="Players' submitted T11 counts are ranked by total troops.">Oyuncuların paylaştığı T11 sayıları toplam askere göre sıralanır.</p>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th data-tr="#" data-en="#">#</th>
-          <th data-tr="OYUNCU" data-en="PLAYER">OYUNCU</th>
-          <th data-tr="🛡️ PİYADE" data-en="🛡️ INFANTRY">🛡️ PİYADE</th>
-          <th data-tr="🐎 SÜVARİ" data-en="🐎 CAVALRY">🐎 SÜVARİ</th>
-          <th data-tr="🏹 OKÇU" data-en="🏹 ARCHERS">🏹 OKÇU</th>
-          <th data-tr="TOPLAM T11" data-en="TOTAL T11">TOPLAM T11</th>
-        </tr></thead>
-        <tbody id="t11RankingBody"><tr><td colspan="6" style="color:#888" data-tr="Yükleniyor..." data-en="Loading...">Yükleniyor...</td></tr></tbody>
-      </table>
-    </div>
-    <p id="t11RankingNote" style="font-size:12px;color:var(--muted);margin-bottom:0"></p>
-  </div>
+  
 </div>
 
 </section>
@@ -1184,6 +1198,8 @@ refreshTerritoryLabels();
     arenaPlayer = player;
 
     $a("arenaPlayerPanel").style.display = "block";
+    if ($a("t11EntryPanel")) $a("t11EntryPanel").style.display = "block";
+    if ($a("t11LoginNotice")) $a("t11LoginNotice").style.display = "none";
     $a("arenaPlayerInfo").textContent =
       player.name + " | " + player.alliance;
 
@@ -1325,6 +1341,7 @@ refreshTerritoryLabels();
       arenaPlayer = null;
       $a("arenaPlayerPanel").style.display = "none";
       if ($a("t11EntryPanel")) $a("t11EntryPanel").style.display = "none";
+      if ($a("t11LoginNotice")) $a("t11LoginNotice").style.display = "block";
       arenaMessage("arenaLoginMessage", "Oyuncu oturumu kapatıldı.");
       await loadT11();
     } catch (error) {
