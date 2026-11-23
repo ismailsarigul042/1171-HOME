@@ -84,6 +84,13 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 @media(max-width:900px){#app{padding-left:250px;padding-right:16px}.tabs{width:205px}.span-8,.span-4,.span-6{grid-column:span 12}}
 @media(max-width:700px){#app{padding:12px}.tabs{position:static;width:auto;flex-direction:row;overflow:auto;margin:12px 0 18px;padding:8px;border-radius:13px}.tabs:before{display:none}.tab{width:auto;flex:0 0 auto;padding:10px 12px}.topbar{align-items:flex-start}.top-actions{flex-wrap:wrap;justify-content:flex-end}.hero{padding:25px 3px 18px}.stat-row{grid-template-columns:repeat(3,1fr)}.card{padding:16px}}
 @media(max-width:430px){.brand strong{font-size:14px}.brand small{font-size:8px}.brand-mark{width:40px;height:40px}.status{display:none}.top-actions{gap:5px}.ghost{padding:8px}.stat{padding:9px}.stat b{font-size:19px}.quick{grid-template-columns:1fr 1fr}.tab{font-size:12px}}
+
+.event-item{display:flex;gap:14px;align-items:flex-start;background:#111318;border:1px solid #30343d;border-radius:12px;padding:13px;margin:9px 0;white-space:normal}
+.event-date{flex:0 0 76px;text-align:center;border:1px solid #806b3e;border-radius:10px;padding:8px 5px;background:#292319;color:var(--gold2)}
+.event-date b{display:block;font-size:23px;line-height:1.1}.event-date small{font-size:10px;letter-spacing:1px}
+.event-info{flex:1;min-width:0}.event-info h4{margin:0 0 5px;color:var(--gold2);font-size:14px}.event-info p{margin:5px 0 0;color:var(--muted);font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:430px){.event-item{gap:9px;padding:10px}.event-date{flex-basis:62px}.event-date b{font-size:20px}}
+
 </style>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -109,6 +116,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 <button class="tab active" data-panel="dashboard" data-tr="⌂ Genel Bakış" data-en="⌂ Overview">⌂ Genel Bakış</button>
 <button class="tab" data-panel="admin" data-tr="♛ 1171 Admin" data-en="♛ 1171 Admin">♛ 1171 Admin</button>
 <button class="tab" data-panel="rally" data-tr="⚔ Rally Sync" data-en="⚔ Rally Sync">⚔ Rally Sync</button>
+<button class="tab" data-panel="events" data-tr="📅 Etkinlik Takvimi" data-en="📅 Event Calendar">📅 Etkinlik Takvimi</button>
 <button class="tab" data-panel="map" data-tr="⌖ Harita" data-en="⌖ Map">⌖ Harita</button>
 <button class="tab" data-panel="roster" data-tr="♜ Battle Roster" data-en="♜ Battle Roster">♜ Battle Roster</button>
 <button class="tab" data-panel="fun" data-tr="✧ Eğlence" data-en="✧ Fun">✧ Eğlence</button>
@@ -142,6 +150,26 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 </article>
 
 </div></section>
+<section class="panel" id="events">
+  <div class="grid">
+    <article class="card span-12">
+      <div class="card-head">
+        <h3 data-tr="1171 ETKİNLİK TAKVİMİ" data-en="1171 EVENT CALENDAR">1171 ETKİNLİK TAKVİMİ</h3>
+        <span class="tag" data-tr="İTTİFAK PROGRAMI" data-en="ALLIANCE SCHEDULE">İTTİFAK PROGRAMI</span>
+      </div>
+      <div id="eventAdminForm" style="display:none">
+        <div class="rowform">
+          <input id="eventTitle" class="field" maxlength="120" placeholder="Etkinlik adı" data-tr-placeholder="Etkinlik adı" data-en-placeholder="Event title">
+          <input id="eventDate" class="field" type="date" aria-label="Etkinlik tarihi">
+          <input id="eventTime" class="field" type="time" aria-label="Etkinlik saati">
+        </div>
+        <textarea id="eventDescription" class="field" maxlength="1000" rows="2" style="resize:vertical" placeholder="Açıklama / hatırlatma (isteğe bağlı)" data-tr-placeholder="Açıklama / hatırlatma (isteğe bağlı)" data-en-placeholder="Description / reminder (optional)"></textarea>
+        <button id="addEvent" class="gold-btn" type="button" data-tr="ETKİNLİK EKLE" data-en="ADD EVENT">ETKİNLİK EKLE</button>
+      </div>
+      <div id="eventList" style="margin-top:14px;color:var(--muted)" data-tr="Etkinlikler yükleniyor..." data-en="Loading events...">Etkinlikler yükleniyor...</div>
+    </article>
+  </div>
+</section>
 <section class="panel" id="rally"><div class="grid"><article class="card span-8"><div class="card-head"><h3 data-tr="RALLY SYNC" data-en="RALLY SYNC">RALLY SYNC</h3><span class="tag">OPERATIONS</span></div><p style="color:var(--muted)" data-tr="Ralli / operasyon bilgilerini burada takip edeceğimiz alan." data-en="This is where rally and operation information will be tracked.">Ralli / operasyon bilgilerini burada takip edeceğimiz alan.</p><div class="rowform" id="rallyAdminForm" style="display:none">
   <input class="field" id="rallyName" placeholder="Operasyon adı" data-tr-placeholder="Operasyon adı" data-en-placeholder="Operation Name">
 <input class="field" id="rallyTime" placeholder="Saat / not" data-tr-placeholder="Saat / not" data-en-placeholder="Time / Note">
@@ -371,6 +399,8 @@ function setLanguage(lang) {
 
 document.getElementById("langTR").onclick = () => setLanguage("tr");
 document.getElementById("langEN").onclick = () => setLanguage("en");
+document.getElementById("langTR").addEventListener("click", () => { if (typeof loadEvents === "function") loadEvents(); });
+document.getElementById("langEN").addEventListener("click", () => { if (typeof loadEvents === "function") loadEvents(); });
 
 setLanguage(currentLang);
     document.querySelectorAll("#rally p.notice[data-tr][data-en]").forEach(el => {
@@ -615,6 +645,95 @@ async function initPlayers() {
 
 initPlayers();
 initAnnouncements();
+
+function formatEventDate(value) {
+  const parts = String(value || '').split('-').map(Number);
+  if (parts.length !== 3 || parts.some(Number.isNaN)) return value || '';
+  const date = new Date(parts[0], parts[1] - 1, parts[2]);
+  return {
+    day: String(parts[2]).padStart(2, '0'),
+    month: date.toLocaleDateString(currentLang === 'en' ? 'en-US' : 'tr-TR', { month: 'short' }).replace('.', '').toUpperCase(),
+    full: date.toLocaleDateString(currentLang === 'en' ? 'en-US' : 'tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
+  };
+}
+
+async function loadEvents() {
+  const list = document.getElementById('eventList');
+  try {
+    const response = await fetch('/admin-api/events', { cache: 'no-store' });
+    if (!response.ok) throw new Error('load failed');
+    const items = await response.json();
+    if (!items.length) {
+      list.textContent = currentLang === 'en' ? 'No events have been scheduled yet.' : 'Henüz etkinlik eklenmedi.';
+      return;
+    }
+    list.innerHTML = items.map(item => {
+      const date = formatEventDate(item.event_date);
+      return `<div class="event-item">
+        <div class="event-date"><b>${esc(date.day)}</b><small>${esc(date.month)}</small></div>
+        <div class="event-info">
+          <h4>${esc(item.title)}</h4>
+          <small style="color:var(--muted)">${esc(date.full)} · ${esc(item.event_time || '')}</small>
+          ${item.description ? `<p>${esc(item.description)}</p>` : ''}
+        </div>
+        ${currentRole === 'admin' ? `<button class="small-btn" type="button" onclick="deleteEvent(${Number(item.id)})">${currentLang === 'en' ? 'Delete' : 'Sil'}</button>` : ''}
+      </div>`;
+    }).join('');
+  } catch (error) {
+    list.textContent = currentLang === 'en' ? 'Events could not be loaded. Please refresh the page.' : 'Etkinlikler yüklenemedi. Lütfen sayfayı yenileyin.';
+  }
+}
+
+async function initEvents() {
+  await checkUserRole();
+  if (currentRole === 'admin') document.getElementById('eventAdminForm').style.display = 'block';
+  document.getElementById('addEvent').onclick = addEvent;
+  await loadEvents();
+}
+
+async function addEvent() {
+  if (currentRole !== 'admin') return;
+  const title = document.getElementById('eventTitle').value.trim();
+  const event_date = document.getElementById('eventDate').value;
+  const event_time = document.getElementById('eventTime').value;
+  const description = document.getElementById('eventDescription').value.trim();
+  if (!title || !event_date || !event_time) {
+    alert(currentLang === 'en' ? 'Enter the event title, date and time.' : 'Etkinlik adı, tarihi ve saatini gir.');
+    return;
+  }
+  const response = await fetch('/admin-api/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, event_date, event_time, description })
+  });
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    alert(data.error || (currentLang === 'en' ? 'Event could not be added.' : 'Etkinlik eklenemedi.'));
+    return;
+  }
+  document.getElementById('eventTitle').value = '';
+  document.getElementById('eventDate').value = '';
+  document.getElementById('eventTime').value = '';
+  document.getElementById('eventDescription').value = '';
+  await loadEvents();
+}
+
+window.deleteEvent = async id => {
+  if (currentRole !== 'admin') return;
+  if (!confirm(currentLang === 'en' ? 'Delete this event?' : 'Bu etkinliği silmek istiyor musun?')) return;
+  const response = await fetch('/admin-api/events', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id })
+  });
+  if (!response.ok) {
+    alert(currentLang === 'en' ? 'Event could not be deleted.' : 'Etkinlik silinemedi.');
+    return;
+  }
+  await loadEvents();
+};
+
+initEvents();
 
 let rallies = [];
 
