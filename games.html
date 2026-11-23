@@ -2070,5 +2070,160 @@ document.addEventListener("keydown",event => {
 loadPlayer().then(() => loadRankings());
 </script>
 
+
+<style>
+.nav .lang-btn {
+  min-width: 42px;
+  padding: 9px 11px;
+  border: 1px solid #806398;
+  border-radius: 9px;
+  background: #35204f;
+  color: #fff;
+}
+.nav .lang-btn.active {
+  border-color: #f5cb55;
+  color: #f5cb55;
+}
+</style>
+<script>
+(() => {
+  const arcadeTranslations = {"1171 ARCADE | Oyun Merkezi": "1171 ARCADE | Game Center", "↩ ANA SAYFA": "↩ HOME", "ÇIKIŞ": "LOG OUT", "Oyuncu yükleniyor...": "Loading player...", "Bir oyun seç ve sıralamada yüksel!": "Choose a game and climb the leaderboard!", "Haftalık sıralamanın sıfırlanmasına": "Time until the weekly leaderboard resets", "Hesaplanıyor...": "Calculating...", "🏆 Genel Sıralama": "🏆 Overall Rankings", "🏛 Şöhretler Salonu": "🏛 Hall of Fame", "Profil resmini seç:": "Choose your avatar:", "Oyuncu sırası": "Player Rank", "Haftalık puan": "Weekly Score", "İttifak sırası": "Alliance Rank", "🎯 OYUNUNU SEÇ": "🎯 CHOOSE YOUR GAME", "Yılanını büyüt, rekor kır!": "Grow your snake and beat the record!", "OYNA": "PLAY", "Rakibini alt et!": "Defeat your opponent!", "MAYIN TARLASI": "MINESWEEPER", "Dikkatli ol, mayına basma!": "Be careful, don't hit a mine!", "HAFIZA": "MEMORY", "Eşleşmeleri bul!": "Find the matching pairs!", "REFLEKS": "REFLEX", "Hızını test et!": "Test your speed!", "TAŞ KAĞIT MAKAS": "ROCK PAPER SCISSORS", "Bilgisayara karşı oyna!": "Play against the computer!", "SAYI TAHMİNİ": "NUMBER GUESS", "Gizli sayıyı bul!": "Find the hidden number!", "BİLGİ YARIŞMASI": "QUIZ", "Bilgini konuştur!": "Put your knowledge to the test!", "YARIŞMAYA KATIL": "JOIN THE QUIZ", "🐍 SNAKE ARENA": "🐍 SNAKE ARENA", "Yiyecekleri topla, yılanını büyüt!": "Collect food and grow your snake!", "PUAN:": "SCORE:", "Başlamak için BAŞLAT düğmesine bas.": "Press START to begin.", "BAŞLAT / YENİDEN": "START / RESTART", "OYUNLARA DÖN": "BACK TO GAMES", "⭕ XOX ARENA": "⭕ TIC-TAC-TOE ARENA", "Bilgisayara karşı oyna ve puanını topla!": "Play against the computer and earn points!", "Sıra sende! (X)": "Your turn! (X)", "YENİDEN OYNA": "PLAY AGAIN", "💣 MAYIN TARLASI": "💣 MINESWEEPER", "Mayınlara basmadan bütün güvenli kareleri aç!": "Reveal all safe squares without hitting a mine!", "Oyuna hazır mısın?": "Are you ready to play?", "YENİ OYUN": "NEW GAME", "🧠 MEMORY ARENA": "🧠 MEMORY ARENA", "Aynı sembolleri eşleştir, hafızanı konuştur!": "Match identical symbols and test your memory!", "HAMLE:": "MOVES:", "Kartları açmaya başla!": "Start revealing the cards!", "⚡ REFLEKS ARENA": "⚡ REFLEX ARENA", "Yeşil alan belirdiğinde hemen tıkla!": "Click as soon as the green area appears!", "Hazır mısın?": "Are you ready?", "TEPKİ SÜRESİ:": "REACTION TIME:", "BAŞLAT": "START", "✊ TAŞ KAĞIT MAKAS": "✊ ROCK PAPER SCISSORS", "Bilgisayara karşı oyna, kazan ve puan topla!": "Play against the computer, win, and earn points!", "Seçimini yap!": "Make your choice!", "Sen: - | Bilgisayar: -": "You: - | Computer: -", "Galibiyet: 0 | Beraberlik: 0 | Mağlubiyet: 0": "Wins: 0 | Draws: 0 | Losses: 0", "SIFIRLA": "RESET", "🔢 SAYI TAHMİNİ": "🔢 NUMBER GUESS", "1 ile 100 arasında tuttuğım sayıyı bul!": "Guess the number I'm thinking of between 1 and 100!", "Bir sayı tahmin et!": "Guess a number!", "TAHMİN ET": "GUESS", "DENEME:": "ATTEMPTS:", "❓ 1171 BİLGİ YARIŞMASI": "❓ 1171 QUIZ", "ZORLUK SEVİYESİNİ SEÇ": "CHOOSE DIFFICULTY", "🟢 KOLAY": "🟢 EASY", "🟡 ORTA": "🟡 MEDIUM", "🔴 ZOR": "🔴 HARD", "SORU 1 / 10": "QUESTION 1 / 10", "Cevabını seç!": "Choose your answer!", "SONRAKİ SORU": "NEXT QUESTION", "YENİDEN BAŞLA": "RESTART", "🏆 GENEL SIRALAMA": "🏆 OVERALL RANKINGS", "👑 EN İYİ OYUNCULAR": "👑 TOP PLAYERS", "Sıralama yükleniyor...": "Loading rankings...", "⚔ İLK 3 İTTİFAK": "⚔ TOP 3 ALLIANCES", "🏛 ŞÖHRETLER SALONU": "🏛 HALL OF FAME", "Geçmiş haftaların şampiyonları ve başarı arşivi burada yer alacak.": "Past weekly champions and the achievement archive will appear here.", "Haftalık şampiyonlar arşivi yakında açılıyor!": "The weekly champions archive is coming soon!", "1171 ARCADE • HAVE FUN • 1171 HOME": "1171 ARCADE • HAVE FUN • 1171 HOME", "Oyuncu girişi gerekli": "Player login required", "Önce ana sayfadan oyuncu PIN'inle giriş yap.": "Please log in with your player PIN from the home page first.", "Oyuncu bilgisi alınamadı.": "Could not retrieve player information.", "Henüz puan kaydı yok.": "No scores have been recorded yet.", "Henüz ittifak puanı yok.": "No alliance points yet.", "Sıralama alınamadı.": "Could not load the rankings.", "İlk 10 dışı": "Outside Top 10", "İlk 3 dışı": "Outside Top 3", "Bu oyun çok yakında 1171 ARCADE'de!": "This game is coming soon to 1171 ARCADE!", "Kazandın! 🎉": "You won! 🎉", "Bilgisayar düşünüyor...": "The computer is thinking...", "Bilgisayar kazandı!": "The computer won!", "Oyun bitti!": "Game over!", "İlk kareyi seç! Mayınlar ilk seçimden sonra yerleşecek.": "Choose your first square! Mines will be placed after your first selection.", "💥 Mayına bastın! Yeni oyun deneyebilirsin.": "💥 You hit a mine! You can try a new game.", "🏆 TEBRİKLER! Bütün mayınları buldun!": "🏆 CONGRATULATIONS! You found all the mines!", "Aynı sembolleri bul!": "Find the matching symbols!", "🏆 TEBRİKLER! Bütün kartları eşleştirdin!": "🏆 CONGRATULATIONS! You matched all the cards!", "Yeşil alanı bekle...": "Wait for the green area...", "Hazır ol! Yeşil alanı bekle...": "Get ready! Wait for the green area...", "ŞİMDİ TIKLA!": "CLICK NOW!", "TIKLA! TIKLA! TIKLA!": "CLICK! CLICK! CLICK!", "ERKEN TIKLADIN!": "TOO EARLY!", "Biraz sabretmeliydin! Yeniden dene.": "You should have waited a little! Try again.", "⚡ ŞİMŞEK GİBİ!": "⚡ LIGHTNING FAST!", "👏 ÇOK İYİ!": "👏 VERY GOOD!", "Biraz daha hızlanabilirsin!": "You can be a little faster!", "SONUÇ": "RESULT", "Sen: ": "You: ", " | Bilgisayar: ": " | Computer: ", "Galibiyet: ": "Wins: ", " | Beraberlik: ": " | Draws: ", " | Mağlubiyet: ": " | Losses: ", "✊ Taş": "✊ Rock", "✋ Kağıt": "✋ Paper", "✌️ Makas": "✌️ Scissors", "🤝 BERABERE!": "🤝 IT'S A DRAW!", "🏆 KAZANDIN!": "🏆 YOU WON!", "😅 BU TURU BİLGİSAYAR KAZANDI!": "😅 THE COMPUTER WON THIS ROUND!", "1 ile 100 arasında bir sayı tahmin et!": "Guess a number between 1 and 100!", "Lütfen 1 ile 100 arasında tam sayı gir!": "Please enter a whole number between 1 and 100!", "⬆️ Daha büyük bir sayı dene!": "⬆️ Try a higher number!", "⬇️ Daha küçük bir sayı dene!": "⬇️ Try a lower number!", "🏆 YARIŞMA TAMAMLANDI!": "🏆 QUIZ COMPLETED!", "⏱️ BİTTİ": "⏱️ FINISHED", "SONUÇLARI GÖR": "VIEW RESULTS", "Toplam puanın: ": "Your total score: ", "Önce oyuncu PIN'inle giriş yapmalısın.": "You must log in with your player PIN first.", "Bol şans!": "Good luck!", " Puanın kaydedildi!": " Your score has been saved!", "Puan kaydedilemedi.": "Could not save the score.", " Puan gönderilemedi.": " Could not submit the score.", "Türkiye'nin başkenti neresidir?": "What is the capital of Turkey?", "İstanbul": "Istanbul", "Ankara": "Ankara", "İzmir": "Izmir", "Konya": "Konya", "Bir haftada kaç gün vardır?": "How many days are there in a week?", "Güneş hangi yönden doğar?": "In which direction does the sun rise?", "Batı": "West", "Doğu": "East", "Kuzey": "North", "Güney": "South", "Bir yılda kaç ay vardır?": "How many months are there in a year?", "Türkiye'nin para birimi nedir?": "What is the currency of Turkey?", "Euro": "Euro", "Dolar": "Dollar", "Lira": "Lira", "Sterlin": "Pound sterling", "Dünyanın doğal uydusu hangisidir?": "What is Earth's natural satellite?", "Mars": "Mars", "Ay": "Moon", "Güneş": "Sun", "Venüs": "Venus", "En küçük asal sayı kaçtır?": "What is the smallest prime number?", "Su kaç derecede donar?": "At what temperature does water freeze?", "İstiklal Marşı'nın yazarı kimdir?": "Who wrote the Turkish National Anthem?", "Mehmet Akif Ersoy": "Mehmet Akif Ersoy", "Namık Kemal": "Namık Kemal", "Yahya Kemal": "Yahya Kemal", "Orhan Veli": "Orhan Veli", "Türkiye Cumhuriyeti hangi yıl kurulmuştur?": "In which year was the Republic of Turkey founded?", "Türkiye'nin en uzun nehri hangisidir?": "What is the longest river in Turkey?", "Fırat": "Euphrates", "Kızılırmak": "Kızılırmak", "Sakarya": "Sakarya", "Dicle": "Tigris", "Osmanlı Devleti hangi yıl kurulmuştur?": "In which year was the Ottoman Empire founded?", "Dünyanın en büyük okyanusu hangisidir?": "What is the largest ocean in the world?", "Atlas": "Atlantic", "Hint": "Indian", "Pasifik": "Pacific", "Arktik": "Arctic", "Işık hızı yaklaşık kaç km/s'dir?": "Approximately how fast is the speed of light in km/s?", "Türkiye'nin en yüksek dağı hangisidir?": "What is the highest mountain in Turkey?", "Erciyes": "Erciyes", "Ağrı": "Mount Ararat", "Uludağ": "Uludağ", "Kaçkar": "Kaçkar", "Periyodik tabloda O hangi elementi gösterir?": "Which element does O represent in the periodic table?", "Altın": "Gold", "Oksijen": "Oxygen", "Gümüş": "Silver", "Demir": "Iron", "İlk Türk devletlerinden Göktürklerin yazıtları hangisidir?": "Which inscriptions belong to the Göktürks, one of the early Turkic states?", "Orhun Yazıtları": "Orkhon Inscriptions", "Nutuk": "Nutuk", "Divan-ı Hikmet": "Divan-i Hikmet", "Kutadgu Bilig": "Kutadgu Bilig", "Dünya'nın en büyük kıtası hangisidir?": "What is the largest continent in the world?", "Afrika": "Africa", "Avrupa": "Europe", "Asya": "Asia", "Amerika": "America", "Türkiye kaç coğrafi bölgeye ayrılır?": "How many geographical regions is Turkey divided into?", "Mimar Sinan'ın ustalık eseri hangisidir?": "Which work is considered Mimar Sinan's masterpiece?", "Süleymaniye": "Süleymaniye Mosque", "Selimiye": "Selimiye Mosque", "Şehzade": "Şehzade Mosque", "Sultanahmet": "Sultan Ahmed Mosque", "Osmanlı Devleti'nin ilk anayasasının adı nedir?": "What was the name of the Ottoman Empire's first constitution?", "Kanun-i Esasi": "Kanun-i Esasi", "Sened-i İttifak": "Charter of Alliance", "Tanzimat": "Tanzimat", "Islahat": "Reform Edict", "DNA'nın çift sarmal modelini açıklayan bilim insanları kimlerdir?": "Which scientists described the double-helix model of DNA?", "Newton ve Einstein": "Newton and Einstein", "Watson ve Crick": "Watson and Crick", "Darwin ve Mendel": "Darwin and Mendel", "Curie ve Bohr": "Curie and Bohr", "Matematikte asal sayıların sonsuz olduğunu kanıtlayan kimdir?": "Who proved that there are infinitely many prime numbers?", "Öklid": "Euclid", "Pisagor": "Pythagoras", "Arşimet": "Archimedes", "Gauss": "Gauss", "Türkiye'nin ilk kadın savaş pilotu kimdir?": "Who was Turkey's first female combat pilot?", "Halide Edip": "Halide Edip", "Sabiha Gökçen": "Sabiha Gökçen", "Safiye Ali": "Safiye Ali", "Afet İnan": "Afet İnan", "Periyodik tabloda atom numarası 79 olan element hangisidir?": "Which element has atomic number 79 in the periodic table?", "Platin": "Platinum", "Bakır": "Copper", "Lozan Antlaşması hangi yıl imzalanmıştır?": "In which year was the Treaty of Lausanne signed?", "Işığın boşluktaki hızı saniyede yaklaşık kaç metredir?": "Approximately how many meters per second is the speed of light in a vacuum?", "Hücrede enerji üretiminden sorumlu organel hangisidir?": "Which organelle is responsible for energy production in the cell?", "Ribozom": "Ribosome", "Lizozom": "Lysosome", "Mitokondri": "Mitochondrion", "Golgi": "Golgi apparatus", "E=mc² formülü hangi bilim insanına aittir?": "Which scientist is associated with the formula E=mc²?", "Tesla": "Tesla", "Bohr": "Bohr", "Türkiye'nin ilk yerli otomobili Devrim hangi yıl üretilmiştir?": "In which year was Turkey's first domestically produced car, Devrim, manufactured?"};
+  const nodeStates = new WeakMap();
+  const attributeStates = new WeakMap();
+  let arcadeLanguage = localStorage.getItem("1171_language") || "tr";
+
+  function translateValue(source) {
+    const trimmed = source.trim();
+    if (arcadeLanguage !== "en") return source;
+    let translated = arcadeTranslations[trimmed];
+
+    if (!translated) {
+      let match;
+      if ((match = trimmed.match(/^(\d+) gün (\d+) saat (\d+) dk (\d+) sn$/))) {
+        translated = `${match[1]} days ${match[2]} hours ${match[3]} min ${match[4]} sec`;
+      } else if ((match = trimmed.match(/^Güzel gidiyorsun! Güvenli kare: (\d+)$/))) {
+        translated = `You're doing great! Safe squares: ${match[1]}`;
+      } else if ((match = trimmed.match(/^🏆 TEBRİKLER! Sayıyı buldun: (\d+)$/))) {
+        translated = `🏆 CONGRATULATIONS! You guessed the number: ${match[1]}`;
+      } else if ((match = trimmed.match(/^(.+?) \+(\d+) puan$/))) {
+        translated = `${arcadeTranslations[match[1]] || match[1]} +${match[2]} points`;
+      } else if ((match = trimmed.match(/^SORU (\d+) \/ (\d+)$/))) {
+        translated = `QUESTION ${match[1]} / ${match[2]}`;
+      } else if ((match = trimmed.match(/^⏰ Süre doldu! Doğru cevap: (.+)$/))) {
+        translated = `⏰ Time's up! Correct answer: ${arcadeTranslations[match[1]] || match[1]}`;
+      } else if ((match = trimmed.match(/^❌ Yanlış cevap! Doğru cevap: (.+)$/))) {
+        translated = `❌ Incorrect answer! Correct answer: ${arcadeTranslations[match[1]] || match[1]}`;
+      } else if ((match = trimmed.match(/^🏆 TEBRİKLER! Sayıyı buldun: (.+)$/))) {
+        translated = `🏆 CONGRATULATIONS! You found the number: ${match[1]}`;
+      } else if ((match = trimmed.match(/^Oyun bitti! Kazandığın puan: (\d+)$/))) {
+        translated = `Game over! Your score: ${match[1]}`;
+      } else if ((match = trimmed.match(/^Toplam puanın: (\d+)$/))) {
+        translated = `Your total score: ${match[1]}`;
+      } else if ((match = trimmed.match(/^(\d+) P$/))) {
+        translated = `${match[1]} pts`;
+      } else if ((match = trimmed.match(/^Sen: (.+) \| Bilgisayar: (.+)$/))) {
+        translated = `You: ${arcadeTranslations[match[1]] || match[1]} | Computer: ${arcadeTranslations[match[2]] || match[2]}`;
+      } else if ((match = trimmed.match(/^Galibiyet: (\d+) \| Beraberlik: (\d+) \| Mağlubiyet: (\d+)$/))) {
+        translated = `Wins: ${match[1]} | Draws: ${match[2]} | Losses: ${match[3]}`;
+      } else if ((match = trimmed.match(/^✅ DOĞRU CEVAP! \+(\d+) PUAN$/))) {
+        translated = `✅ CORRECT ANSWER! +${match[1]} POINTS`;
+      } else if ((match = trimmed.match(/^Toplam puanın: (\d+)$/))) {
+        translated = `Your total score: ${match[1]}`;
+      } else if ((match = trimmed.match(/^(.+) Puanın kaydedildi!$/))) {
+        translated = `${translateValue(match[1])} Your score has been saved!`;
+      }
+    }
+
+    if (!translated) return source;
+    const leading = source.match(/^\s*/)?.[0] || "";
+    const trailing = source.match(/\s*$/)?.[0] || "";
+    return leading + translated + trailing;
+  }
+
+  function processTextNode(node) {
+    if (!node || node.nodeType !== Node.TEXT_NODE) return;
+    const current = node.nodeValue;
+    const state = nodeStates.get(node);
+    let source = current;
+    if (state && current === state.output) source = state.source;
+    const output = translateValue(source);
+    nodeStates.set(node, { source, output });
+    if (current !== output) node.nodeValue = output;
+  }
+
+  function walk(root) {
+    if (!root) return;
+    if (root.nodeType === Node.TEXT_NODE) {
+      processTextNode(root);
+      return;
+    }
+    if (root.nodeType === Node.ELEMENT_NODE &&
+        ["SCRIPT", "STYLE"].includes(root.tagName)) return;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) processTextNode(node);
+  }
+
+  function processPlaceholders() {
+    document.querySelectorAll("input[placeholder]").forEach(input => {
+      const current = input.getAttribute("placeholder") || "";
+      const state = attributeStates.get(input);
+      let source = current;
+      if (state && current === state.output) source = state.source;
+      const output = arcadeLanguage === "en"
+        ? (arcadeTranslations[source.trim()] || source)
+        : source;
+      attributeStates.set(input, { source, output });
+      if (current !== output) input.setAttribute("placeholder", output);
+    });
+  }
+
+  function setArcadeLanguage(lang) {
+    arcadeLanguage = lang === "en" ? "en" : "tr";
+    localStorage.setItem("1171_language", arcadeLanguage);
+    document.documentElement.lang = arcadeLanguage;
+    document.title = arcadeLanguage === "en"
+      ? "1171 ARCADE | Game Center"
+      : "1171 ARCADE | Oyun Merkezi";
+
+    walk(document.body);
+    processPlaceholders();
+
+    document.getElementById("langTR")?.classList.toggle("active", arcadeLanguage === "tr");
+    document.getElementById("langEN")?.classList.toggle("active", arcadeLanguage === "en");
+  }
+
+  const nav = document.querySelector("header .nav");
+  if (nav && !document.getElementById("langTR")) {
+    const tr = document.createElement("button");
+    tr.type = "button";
+    tr.id = "langTR";
+    tr.className = "lang-btn";
+    tr.textContent = "🇹🇷 TR";
+    tr.addEventListener("click", () => setArcadeLanguage("tr"));
+
+    const en = document.createElement("button");
+    en.type = "button";
+    en.id = "langEN";
+    en.className = "lang-btn";
+    en.textContent = "🇬🇧 EN";
+    en.addEventListener("click", () => setArcadeLanguage("en"));
+
+    nav.append(tr, en);
+  }
+
+  const observer = new MutationObserver(records => {
+    for (const record of records) {
+      if (record.type === "characterData") processTextNode(record.target);
+      for (const added of record.addedNodes || []) walk(added);
+    }
+    processPlaceholders();
+  });
+  observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+  setArcadeLanguage(arcadeLanguage);
+})();
+</script>
+
 </body>
 </html>
