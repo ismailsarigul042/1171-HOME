@@ -124,6 +124,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 <button class="tab active" data-panel="dashboard" data-tr="⌂ Genel Bakış" data-en="⌂ Overview">⌂ Genel Bakış</button>
 <button class="tab" data-panel="admin" data-tr="♛ 1171 Admin" data-en="♛ 1171 Admin">♛ 1171 Admin</button>
 <button class="tab" data-panel="rally" data-tr="⚔ Rally Sync" data-en="⚔ Rally Sync">⚔ Rally Sync</button>
+<button class="tab" data-panel="warprep" data-tr="🛡️ Savaş Hazırlık" data-en="🛡️ War Preparation">🛡️ Savaş Hazırlık</button>
 <button class="tab" data-panel="events" data-tr="📅 Etkinlik Takvimi" data-en="📅 Event Calendar">📅 Etkinlik Takvimi</button>
 <button class="tab" data-panel="map" data-tr="⌖ Harita" data-en="⌖ Map">⌖ Harita</button>
 <button class="tab" data-panel="roster" data-tr="♜ Battle Roster" data-en="♜ Battle Roster">♜ Battle Roster</button>
@@ -391,6 +392,64 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
   </div>
 </section>
 
+
+<section class="panel" id="warprep">
+  <div class="grid">
+    <article class="card span-12">
+      <div class="card-head">
+        <h3 data-tr="🛡️ 1171 SAVAŞ HAZIRLIK MERKEZİ" data-en="🛡️ 1171 WAR PREPARATION CENTER">🛡️ 1171 SAVAŞ HAZIRLIK MERKEZİ</h3>
+        <button class="small-btn" id="refreshWarPrep" type="button" data-tr="↻ Yenile" data-en="↻ Refresh">↻ Yenile</button>
+      </div>
+      <div class="stat-row" style="margin-bottom:14px">
+        <div class="stat"><b id="warReadyCount">0</b><small data-tr="Hazır" data-en="Ready">Hazır</small></div>
+        <div class="stat"><b id="warNotReadyCount">0</b><small data-tr="Hazır değil" data-en="Not ready">Hazır değil</small></div>
+        <div class="stat"><b id="warUnansweredCount">0</b><small data-tr="Yanıt bekleniyor" data-en="Awaiting response">Yanıt bekleniyor</small></div>
+      </div>
+      <div id="warOperationSummary" class="notice" data-tr="Aktif savaş operasyonu bulunmuyor." data-en="There is no active war operation.">Aktif savaş operasyonu bulunmuyor.</div>
+      <div id="warAdminArea" style="display:none;margin-top:16px">
+        <h3 data-tr="YENİ SAVAŞ OPERASYONU" data-en="NEW WAR OPERATION">YENİ SAVAŞ OPERASYONU</h3>
+        <div class="rowform">
+          <input id="warTitle" class="field" maxlength="120" placeholder="Operasyon adı" data-tr-placeholder="Operasyon adı" data-en-placeholder="Operation name">
+          <input id="warDate" class="field" type="date" aria-label="Savaş tarihi">
+          <input id="warTime" class="field" type="time" aria-label="Savaş saati">
+        </div>
+        <textarea id="warNotes" class="field" rows="2" maxlength="1000" placeholder="Savaş notları / genel talimatlar" data-tr-placeholder="Savaş notları / genel talimatlar" data-en-placeholder="Battle notes / general instructions"></textarea>
+        <button class="gold-btn" id="createWarOperation" type="button" data-tr="OPERASYONU OLUŞTUR" data-en="CREATE OPERATION">OPERASYONU OLUŞTUR</button>
+        <h3 style="margin-top:22px" data-tr="GÖREV DAĞITIMI" data-en="ASSIGN TASKS">GÖREV DAĞITIMI</h3>
+        <div class="rowform">
+          <select id="warPlayerSelect" class="field"><option value="">Oyuncu seç</option></select>
+          <select id="warTerritorySelect" class="field">
+            <option value="main-castle">ANA ŞATO</option>
+            <option value="castle-1">KALE 1</option><option value="castle-2">KALE 2</option><option value="castle-3">KALE 3</option><option value="castle-4">KALE 4</option>
+            <option value="temple-1">TAPINAK 1</option><option value="temple-2">TAPINAK 2</option><option value="temple-3">TAPINAK 3</option><option value="temple-4">TAPINAK 4</option><option value="temple-5">TAPINAK 5</option><option value="temple-6">TAPINAK 6</option><option value="temple-7">TAPINAK 7</option><option value="temple-8">TAPINAK 8</option><option value="temple-9">TAPINAK 9</option><option value="temple-10">TAPINAK 10</option><option value="temple-11">TAPINAK 11</option><option value="temple-12">TAPINAK 12</option>
+          </select>
+          <select id="warTaskSelect" class="field"><option value="attack">Saldırı</option><option value="defense">Savunma</option><option value="support">Destek</option></select>
+        </div>
+        <input id="warAssignmentNotes" class="field" maxlength="300" placeholder="Görev notu (isteğe bağlı)" data-tr-placeholder="Görev notu (isteğe bağlı)" data-en-placeholder="Task note (optional)">
+        <button class="small-btn" id="saveWarAssignment" type="button" style="margin-top:9px" data-tr="＋ GÖREV ATA / GÜNCELLE" data-en="＋ ASSIGN / UPDATE TASK">＋ GÖREV ATA / GÜNCELLE</button>
+      </div>
+    </article>
+    <article class="card span-12">
+      <div class="card-head"><h3 data-tr="OYUNCU GÖREVLERİ VE HAZIRLIK DURUMU" data-en="PLAYER ASSIGNMENTS AND READINESS">OYUNCU GÖREVLERİ VE HAZIRLIK DURUMU</h3></div>
+      <div id="warPlayerMessage" class="notice" style="margin-bottom:12px" data-tr="Görevini görmek ve hazır durumunu bildirmek için 1171 ARENA oyuncu PIN'inle giriş yap." data-en="Log in with your 1171 ARENA Player PIN to view your task and report readiness.">Görevini görmek ve hazır durumunu bildirmek için 1171 ARENA oyuncu PIN'inle giriş yap.</div>
+      <div id="warMyAssignment" style="display:none;margin-bottom:14px"></div>
+      <div id="warReadinessActions" style="display:none;margin-bottom:14px">
+        <button class="attendance-btn" id="warMarkReady" type="button" data-tr="✅ HAZIRIM" data-en="✅ I'M READY">✅ HAZIRIM</button>
+        <button class="attendance-btn" id="warMarkNotReady" type="button" data-tr="⏳ HENÜZ HAZIR DEĞİLİM" data-en="⏳ NOT READY YET">⏳ HENÜZ HAZIR DEĞİLİM</button>
+        <span id="warMyStatus" style="font-size:12px;color:var(--muted);margin-left:8px"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th data-tr="OYUNCU" data-en="PLAYER">OYUNCU</th><th data-tr="BÖLGE" data-en="TERRITORY">BÖLGE</th><th data-tr="GÖREV" data-en="TASK">GÖREV</th><th data-tr="NOT" data-en="NOTE">NOT</th><th data-tr="HAZIRLIK" data-en="READINESS">HAZIRLIK</th><th id="warActionHeader" data-tr="İŞLEM" data-en="ACTION" style="display:none">İŞLEM</th>
+          </tr></thead>
+          <tbody id="warAssignmentsBody"><tr><td colspan="6" style="color:#888">Henüz görev dağıtımı yok.</td></tr></tbody>
+        </table>
+      </div>
+    </article>
+  </div>
+</section>
+
 <section class="panel" id="fun">
 <!-- OYUN MERKEZİ -->
 <article class="card" style="margin-bottom:18px;text-align:center">
@@ -606,7 +665,7 @@ $('logoutBtn').onclick=()=>{location.href='/logout'};
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showPanel(b.dataset.panel));
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>showPanel(b.dataset.go));
 function showPanel(id){
-  if(id==="admin" && currentRole!=="admin") return;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.panel===id));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));if(id==="performance") loadPerformance();}
+  if(id==="admin" && currentRole!=="admin") return;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.panel===id));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));if(id==="performance") loadPerformance();if(id==="warprep") loadWarPrep();}
 let performanceLoaded = false;
 async function loadPerformance() {
   const body = document.getElementById("performanceBody");
@@ -1434,6 +1493,157 @@ refreshTerritoryLabels();
   arenaCheckLogin();
   loadT11();
 })();
+
+
+// 1171 WAR PREPARATION CENTER
+const warTerritoryNames = {
+  "main-castle": "ANA ŞATO",
+  ...Object.fromEntries(Array.from({length:4},(_,i)=>[`castle-${i+1}`,`KALE ${i+1}`])),
+  ...Object.fromEntries(Array.from({length:12},(_,i)=>[`temple-${i+1}`,`TAPINAK ${i+1}`]))
+};
+function warTaskLabel(task) {
+  const labels = currentLang === "en"
+    ? { attack: "Attack", defense: "Defense", support: "Support" }
+    : { attack: "Saldırı", defense: "Savunma", support: "Destek" };
+  return labels[task] || task;
+}
+function warTerritoryLabel(id) {
+  if (id === "main-castle") return currentLang === "en" ? "MAIN CASTLE" : "ANA ŞATO";
+  const castle = /^castle-(\d+)$/.exec(id || "");
+  if (castle) return currentLang === "en" ? `CASTLE ${castle[1]}` : `KALE ${castle[1]}`;
+  const temple = /^temple-(\d+)$/.exec(id || "");
+  if (temple) return currentLang === "en" ? `TEMPLE ${temple[1]}` : `TAPINAK ${temple[1]}`;
+  return id || "";
+}
+let warPrepLoaded = false;
+let warPrepData = null;
+
+async function loadWarPrep() {
+  const body = document.getElementById("warAssignmentsBody");
+  if (!body) return;
+  body.innerHTML = `<tr><td colspan="6">${currentLang === "en" ? "Loading..." : "Yükleniyor..."}</td></tr>`;
+  try {
+    const adminView = currentRole === "admin";
+    const response = await fetch(adminView ? "/admin-api/war" : "/api/war-readiness", { cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Savaş bilgileri alınamadı.");
+    warPrepData = data;
+    const op = data.operation;
+    const summary = document.getElementById("warOperationSummary");
+    const adminArea = document.getElementById("warAdminArea");
+    adminArea.style.display = adminView ? "block" : "none";
+    document.getElementById("warActionHeader").style.display = adminView ? "table-cell" : "none";
+    if (!op) {
+      summary.textContent = currentLang === "en" ? "No active war operation. The leader or R4 can create one." : "Aktif savaş operasyonu bulunmuyor. Lider veya R4 yeni bir operasyon oluşturabilir.";
+      body.innerHTML = `<tr><td colspan="6" style="color:#888">${currentLang === "en" ? "No task assignments yet." : "Henüz görev dağıtımı yok."}</td></tr>`;
+      document.getElementById("warReadyCount").textContent = "0";
+      document.getElementById("warNotReadyCount").textContent = "0";
+      document.getElementById("warUnansweredCount").textContent = "0";
+      document.getElementById("warMyAssignment").style.display = "none";
+      document.getElementById("warReadinessActions").style.display = "none";
+      document.getElementById("warPlayerMessage").style.display = "block";
+      if (adminView) fillWarPlayers(data.players || []);
+      warPrepLoaded = true;
+      return;
+    }
+    const dateText = new Date(`${op.battle_date}T${op.battle_time}:00`).toLocaleString(currentLang === "en" ? "en-US" : "tr-TR", { dateStyle: "long", timeStyle: "short" });
+    summary.innerHTML = `<strong style="color:var(--gold2)">${esc(op.title)}</strong><br>${esc(dateText)}${op.notes ? `<br>${esc(op.notes)}` : ""}`;
+    const assignments = data.assignments || [];
+    const ready = assignments.filter(a => a.readiness === "ready").length;
+    const notReady = assignments.filter(a => a.readiness === "not_ready").length;
+    const unanswered = Math.max(0, assignments.length - ready - notReady);
+    document.getElementById("warReadyCount").textContent = ready;
+    document.getElementById("warNotReadyCount").textContent = notReady;
+    document.getElementById("warUnansweredCount").textContent = unanswered;
+    if (adminView) fillWarPlayers(data.players || []);
+
+    const loggedIn = adminView ? false : !!data.loggedIn;
+    const myAssignment = data.assignment;
+    const myBox = document.getElementById("warMyAssignment");
+    const actions = document.getElementById("warReadinessActions");
+    const message = document.getElementById("warPlayerMessage");
+    if (!adminView && loggedIn && myAssignment) {
+      myBox.style.display = "block";
+      myBox.innerHTML = `<div class="notice"><strong>${currentLang === "en" ? "Your assignment" : "Görevin"}:</strong> ${esc(warTerritoryLabel(myAssignment.territory))} · ${esc(warTaskLabel(myAssignment.task_type))}${myAssignment.notes ? `<br>${esc(myAssignment.notes)}` : ""}</div>`;
+      actions.style.display = "block";
+      message.style.display = "none";
+      document.getElementById("warMyStatus").textContent = data.myStatus === "ready" ? (currentLang === "en" ? "Your status: READY" : "Durumun: HAZIR") : data.myStatus === "not_ready" ? (currentLang === "en" ? "Your status: NOT READY" : "Durumun: HAZIR DEĞİL") : (currentLang === "en" ? "No response yet" : "Henüz yanıt vermedin");
+    } else {
+      myBox.style.display = "none";
+      actions.style.display = "none";
+      message.style.display = "block";
+      message.textContent = !loggedIn
+        ? (currentLang === "en" ? "Log in with your 1171 ARENA Player PIN to view your task and report readiness." : "Görevini görmek ve hazır durumunu bildirmek için Eğlence bölümündeki 1171 ARENA alanından oyuncu PIN'inle giriş yap.")
+        : (currentLang === "en" ? "No task has been assigned to your player yet. Contact the leader or R4." : "Oyuncuna henüz görev atanmamış. Lider veya R4 ile iletişime geç.");
+    }
+
+    body.innerHTML = assignments.length ? assignments.map(a => {
+      const status = a.readiness === "ready" ? (currentLang === "en" ? "✅ Ready" : "✅ Hazır") : a.readiness === "not_ready" ? (currentLang === "en" ? "⏳ Not ready" : "⏳ Hazır değil") : (currentLang === "en" ? "Waiting" : "Yanıt bekleniyor");
+      return `<tr><td>${esc(a.name)}</td><td>${esc(warTerritoryLabel(a.territory))}</td><td>${esc(warTaskLabel(a.task_type))}</td><td>${esc(a.notes || "—")}</td><td>${status}</td>${adminView ? `<td><button class="small-btn" type="button" onclick="deleteWarAssignment(${Number(a.id)})">${currentLang === "en" ? "Delete" : "Sil"}</button></td>` : ""}</tr>`;
+    }).join("") : `<tr><td colspan="6" style="color:#888">${currentLang === "en" ? "No task assignments yet." : "Henüz görev dağıtımı yok."}</td></tr>`;
+    warPrepLoaded = true;
+  } catch (error) {
+    body.innerHTML = `<tr><td colspan="6" style="color:#ff7777">${esc(error.message || "Hata")}</td></tr>`;
+  }
+}
+
+function fillWarPlayers(players) {
+  const select = document.getElementById("warPlayerSelect");
+  if (!select) return;
+  const selected = select.value;
+  select.innerHTML = `<option value="">${currentLang === "en" ? "Select player" : "Oyuncu seç"}</option>` + players.map(p => `<option value="${Number(p.id)}">${esc(p.name)}</option>`).join("");
+  if (players.some(p => String(p.id) === selected)) select.value = selected;
+}
+
+async function createWarOperation() {
+  if (currentRole !== "admin") return;
+  const title = document.getElementById("warTitle").value.trim();
+  const battle_date = document.getElementById("warDate").value;
+  const battle_time = document.getElementById("warTime").value;
+  const notes = document.getElementById("warNotes").value.trim();
+  if (!title || !battle_date || !battle_time) {
+    alert(currentLang === "en" ? "Enter the operation name, date and time." : "Operasyon adı, tarih ve saat gir.");
+    return;
+  }
+  const response = await fetch("/admin-api/war", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "create_operation", title, battle_date, battle_time, notes }) });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) { alert(data.error || "Operasyon oluşturulamadı."); return; }
+  await loadWarPrep();
+}
+
+async function saveWarAssignment() {
+  if (currentRole !== "admin") return;
+  const player_id = Number(document.getElementById("warPlayerSelect").value);
+  const territory = document.getElementById("warTerritorySelect").value;
+  const task_type = document.getElementById("warTaskSelect").value;
+  const notes = document.getElementById("warAssignmentNotes").value.trim();
+  if (!player_id) { alert(currentLang === "en" ? "Select a player first." : "Önce oyuncu seç."); return; }
+  const response = await fetch("/admin-api/war", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "assign", player_id, territory, task_type, notes }) });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) { alert(data.error || "Görev atanamadı."); return; }
+  document.getElementById("warAssignmentNotes").value = "";
+  await loadWarPrep();
+}
+
+window.deleteWarAssignment = async id => {
+  if (currentRole !== "admin" || !confirm(currentLang === "en" ? "Delete this assignment?" : "Bu görevi silmek istiyor musun?")) return;
+  const response = await fetch("/admin-api/war", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
+  if (!response.ok) { alert(currentLang === "en" ? "Assignment could not be deleted." : "Görev silinemedi."); return; }
+  await loadWarPrep();
+};
+
+async function setWarReadiness(status) {
+  const response = await fetch("/api/war-readiness", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) { alert(data.error || (currentLang === "en" ? "Status could not be saved." : "Durum kaydedilemedi.")); return; }
+  await loadWarPrep();
+}
+
+document.getElementById("createWarOperation")?.addEventListener("click", createWarOperation);
+document.getElementById("saveWarAssignment")?.addEventListener("click", saveWarAssignment);
+document.getElementById("refreshWarPrep")?.addEventListener("click", loadWarPrep);
+document.getElementById("warMarkReady")?.addEventListener("click", () => setWarReadiness("ready"));
+document.getElementById("warMarkNotReady")?.addEventListener("click", () => setWarReadiness("not_ready"));
 
 </script>
 </body>
