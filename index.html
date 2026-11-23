@@ -223,9 +223,43 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 
 </section>
 
-<section class="panel" id="roster"><div class="grid"><article class="card span-12"><div class="card-head"><h3>BATTLE ROSTER · OYUNCU KADROSU</h3><button class="small-btn" id="exportCsv">⬇ CSV</button></div><div class="rowform"><input class="field" id="playerName" placeholder="Oyuncu adı"><input class="field" id="playerPower" placeholder="Güç / puan"><input class="field" id="playerRole" placeholder="Rol / görev"><button class="small-btn" id="addPlayer">＋ Oyuncu ekle</button></div><div class="table-wrap"><table><thead><tr><th>OYUNCU</th><th>GÜÇ / PUAN</th><th>ROL</th><th>İŞLEM</th></tr></thead><tbody id="rosterBody"><tr><td colspan="4" style="color:#888">Henüz oyuncu eklenmedi.</td></tr></tbody></table></div></article></div></section>
 
-<section class="panel" id="fun">
+<section class="panel" id="roster">
+  <div class="grid">
+    <article class="card span-12">
+      <div class="card-head">
+        <h3 data-tr="BATTLE ROSTER · OYUNCU KADROSU" data-en="BATTLE ROSTER · PLAYER ROSTER">BATTLE ROSTER · OYUNCU KADROSU</h3>
+        <button class="small-btn" id="exportCsv">⬇ CSV</button>
+      </div>
+
+      <div class="rowform">
+        <input class="field" id="playerName" placeholder="Oyuncu adı" data-tr-placeholder="Oyuncu adı" data-en-placeholder="Player Name">
+        <input class="field" id="playerPower" placeholder="Güç / puan" data-tr-placeholder="Güç / puan" data-en-placeholder="Power / Points">
+        <input class="field" id="playerRole" placeholder="Rol / görev" data-tr-placeholder="Rol / görev" data-en-placeholder="Role / Duty">
+        <button class="small-btn" id="addPlayer" data-tr="＋ Oyuncu ekle" data-en="＋ Add Player">＋ Oyuncu ekle</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-tr="OYUNCU" data-en="PLAYER">OYUNCU</th>
+              <th data-tr="GÜÇ / PUAN" data-en="POWER / POINTS">GÜÇ / PUAN</th>
+              <th data-tr="ROL" data-en="ROLE">ROL</th>
+              <th data-tr="İŞLEM" data-en="ACTION">İŞLEM</th>
+            </tr>
+          </thead>
+          <tbody id="rosterBody">
+            <tr>
+              <td colspan="4" style="color:#888" data-tr="Henüz oyuncu eklenmedi." data-en="No players have been added yet.">Henüz oyuncu eklenmedi.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </div>
+</section>
+
 
   <!-- OYUN MERKEZİ -->
   <article class="card" style="margin-bottom:18px;text-align:center">
