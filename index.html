@@ -261,65 +261,73 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 </section>
 
 
-  <!-- OYUN MERKEZİ -->
-  <article class="card" style="margin-bottom:18px;text-align:center">
-    <div class="card-head">
-      <h3>🎮 1171 ARCADE</h3>
-      <span class="tag">GAME CENTER</span>
-    </div>
-
-    <p style="color:var(--muted)">
-      Rengârenk oyunlar, rekabet ve haftalık liderlik mücadelesi seni bekliyor!
-    </p>
-
-    <button class="gold-btn"
-      onclick="location.href='/games.html'"
-      style="width:100%;max-width:350px;padding:15px">
-      🎮 OYUN MERKEZİNE GİR
-    </button>
-  </article>
-
-  <!-- OYUNCU KAYIT VE GİRİŞ -->
-  <div class="card" style="margin-bottom:18px">
-    <div class="card-head">
-      <h3>1171 ARENA</h3>
-      <span class="tag">OYUNCU MERKEZİ</span>
-    </div>
-
-    <p style="color:var(--muted)">
-      Oyuncu kaydını oluştur, PIN'inle giriş yap ve oyunlarda puan topla!
-    </p>
-
-    <div class="grid">
-      <article class="card span-6">
-        <h3>YENİ OYUNCU KAYDI</h3>
-        <input id="arenaRegisterName" class="field" placeholder="Oyuncu adın">
-        <input id="arenaRegisterAlliance" class="field" placeholder="İttifak adın" style="margin-top:8px">
-        <input id="arenaRegisterPin" class="field" type="password" inputmode="numeric" maxlength="4" placeholder="4 haneli PIN" style="margin-top:8px">
-        <button class="gold-btn" id="arenaRegisterBtn" style="margin-top:10px">KAYIT OL</button>
-        <p id="arenaRegisterMessage" style="font-size:12px"></p>
-      </article>
-
-      <article class="card span-6">
-        <h3>OYUNCU GİRİŞİ</h3>
-        <input id="arenaLoginName" class="field" placeholder="Oyuncu adın">
-        <input id="arenaLoginPin" class="field" type="password" inputmode="numeric" maxlength="4" placeholder="4 haneli PIN" style="margin-top:8px">
-        <button class="gold-btn" id="arenaLoginBtn" style="margin-top:10px">GİRİŞ YAP</button>
-        <p id="arenaLoginMessage" style="font-size:12px"></p>
-      </article>
-    </div>
-
-    <div id="arenaPlayerPanel" style="display:none;margin-top:15px;padding:14px;border:1px solid var(--green);border-radius:10px">
-      <strong id="arenaPlayerInfo"></strong>
-      <button class="small-btn" id="arenaLogoutBtn" style="float:right">ÇIKIŞ</button>
-      <p id="arenaMyScore" style="color:var(--muted);margin-top:12px">Haftalık puanın: 0</p>
-    </div>
+  
+<!-- OYUN MERKEZİ -->
+<article class="card" style="margin-bottom:18px;text-align:center">
+  <div class="card-head">
+    <h3 data-tr="🎮 1171 ARCADE" data-en="🎮 1171 ARCADE">🎮 1171 ARCADE</h3>
+    <span class="tag">GAME CENTER</span>
   </div>
+
+  <p style="color:var(--muted)"
+     data-tr="Rengârenk oyunlar, rekabet ve haftalık liderlik mücadelesi seni bekliyor!"
+     data-en="Colorful games, competition, and the weekly leaderboard challenge await you!">
+    Rengârenk oyunlar, rekabet ve haftalık liderlik mücadelesi seni bekliyor!
+  </p>
+
+  <button class="gold-btn"
+    onclick="location.href='/games.html'"
+    style="width:100%;max-width:350px;padding:15px"
+    data-tr="🎮 OYUN MERKEZİNE GİR"
+    data-en="🎮 ENTER GAME CENTER">
+    🎮 OYUN MERKEZİNE GİR
+  </button>
+</article>
+
+<!-- OYUNCU KAYIT VE GİRİŞ -->
+<div class="card" style="margin-bottom:18px">
+  <div class="card-head">
+    <h3 data-tr="1171 ARENA" data-en="1171 ARENA">1171 ARENA</h3>
+    <span class="tag" data-tr="OYUNCU MERKEZİ" data-en="PLAYER CENTER">OYUNCU MERKEZİ</span>
+  </div>
+
+  <p style="color:var(--muted)"
+     data-tr="Oyuncu kaydını oluştur, PIN'inle giriş yap ve oyunlarda puan topla!"
+     data-en="Create your player account, log in with your PIN, and earn points in games!">
+    Oyuncu kaydını oluştur, PIN'inle giriş yap ve oyunlarda puan topla!
+  </p>
+
+  <div class="grid">
+    <article class="card span-6">
+      <h3 data-tr="YENİ OYUNCU KAYDI" data-en="NEW PLAYER REGISTRATION">YENİ OYUNCU KAYDI</h3>
+      <input id="arenaRegisterName" class="field" placeholder="Oyuncu adın" data-tr-placeholder="Oyuncu adın" data-en-placeholder="Player Name">
+      <input id="arenaRegisterAlliance" class="field" placeholder="İttifak adın" data-tr-placeholder="İttifak adın" data-en-placeholder="Alliance Name" style="margin-top:8px">
+      <input id="arenaRegisterPin" class="field" type="password" inputmode="numeric" maxlength="4" placeholder="4 haneli PIN" data-tr-placeholder="4 haneli PIN" data-en-placeholder="4-digit PIN" style="margin-top:8px">
+      <button class="gold-btn" id="arenaRegisterBtn" style="margin-top:10px" data-tr="KAYIT OL" data-en="REGISTER">KAYIT OL</button>
+      <p id="arenaRegisterMessage" style="font-size:12px"></p>
+    </article>
+
+    <article class="card span-6">
+      <h3 data-tr="OYUNCU GİRİŞİ" data-en="PLAYER LOGIN">OYUNCU GİRİŞİ</h3>
+      <input id="arenaLoginName" class="field" placeholder="Oyuncu adın" data-tr-placeholder="Oyuncu adın" data-en-placeholder="Player Name">
+      <input id="arenaLoginPin" class="field" type="password" inputmode="numeric" maxlength="4" placeholder="4 haneli PIN" data-tr-placeholder="4 haneli PIN" data-en-placeholder="4-digit PIN" style="margin-top:8px">
+      <button class="gold-btn" id="arenaLoginBtn" style="margin-top:10px" data-tr="GİRİŞ YAP" data-en="LOG IN">GİRİŞ YAP</button>
+      <p id="arenaLoginMessage" style="font-size:12px"></p>
+    </article>
+  </div>
+
+  <div id="arenaPlayerPanel" style="display:none;margin-top:15px;padding:14px;border:1px solid var(--green);border-radius:10px">
+    <strong id="arenaPlayerInfo"></strong>
+    <button class="small-btn" id="arenaLogoutBtn" style="float:right" data-tr="ÇIKIŞ" data-en="LOG OUT">ÇIKIŞ</button>
+    <p id="arenaMyScore" style="color:var(--muted);margin-top:12px" data-tr="Haftalık puanın: 0" data-en="Your weekly score: 0">Haftalık puanın: 0</p>
+  </div>
+</div>
 
 </section>
 <div class="footer">1171 HOME · COMMAND CENTER · PRIVATE ACCESS</div>
 </main>
 <script>
+
  let currentRole = "guest";
     // 1171 DİL AYARI
 let currentLang = localStorage.getItem("1171_language") || "tr";
