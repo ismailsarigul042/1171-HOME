@@ -128,6 +128,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
 <button class="tab" data-panel="map" data-tr="⌖ Harita" data-en="⌖ Map">⌖ Harita</button>
 <button class="tab" data-panel="roster" data-tr="♜ Battle Roster" data-en="♜ Battle Roster">♜ Battle Roster</button>
 <button class="tab" data-panel="t11" data-tr="⚔️ T11 Asker Takibi" data-en="⚔️ T11 Troop Tracker">⚔️ T11 Asker Takibi</button>
+<button class="tab" data-panel="performance" data-tr="🏆 Oyuncu Performansı" data-en="🏆 Player Performance">🏆 Oyuncu Performansı</button>
 <button class="tab" data-panel="fun" data-tr="✧ Eğlence" data-en="✧ Fun">✧ Eğlence</button>
 </nav>
 <section class="panel active" id="dashboard"><div class="grid">
@@ -357,6 +358,39 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
   </div>
 </section>
 
+
+<section class="panel" id="performance">
+  <div class="grid">
+    <article class="card span-12">
+      <div class="card-head">
+        <h3 data-tr="🏆 1171 OYUNCU PERFORMANS MERKEZİ" data-en="🏆 1171 PLAYER PERFORMANCE CENTER">🏆 1171 OYUNCU PERFORMANS MERKEZİ</h3>
+        <button class="small-btn" id="refreshPerformance" type="button" data-tr="↻ Yenile" data-en="↻ Refresh">↻ Yenile</button>
+      </div>
+      <p style="color:var(--muted);font-size:13px" data-tr="T11 asker sayıları ve etkinlik katılım bildirimleri tek ekranda. Sıralama önce toplam T11, ardından katılım sayısına göre yapılır." data-en="T11 troop counts and event attendance responses in one place. Ranking is ordered by total T11 troops, then attendance count.">T11 asker sayıları ve etkinlik katılım bildirimleri tek ekranda. Sıralama önce toplam T11, ardından katılım sayısına göre yapılır.</p>
+      <div class="stat-row" style="margin:14px 0">
+        <div class="stat"><b id="performancePlayers">0</b><small data-tr="Kayıtlı oyuncu" data-en="Registered players">Kayıtlı oyuncu</small></div>
+        <div class="stat"><b id="performanceT11">0</b><small data-tr="Toplam T11 askeri" data-en="Total T11 troops">Toplam T11 askeri</small></div>
+        <div class="stat"><b id="performanceEvents">0</b><small data-tr="Toplam etkinlik" data-en="Total events">Toplam etkinlik</small></div>
+        <div class="stat"><b id="performanceYes">0</b><small data-tr="Katılacağım yanıtı" data-en="Attending responses">Katılacağım yanıtı</small></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th data-tr="#" data-en="#">#</th>
+            <th data-tr="OYUNCU" data-en="PLAYER">OYUNCU</th>
+            <th data-tr="TOPLAM T11" data-en="TOTAL T11">TOPLAM T11</th>
+            <th data-tr="KATILACAĞIM" data-en="ATTENDING">KATILACAĞIM</th>
+            <th data-tr="BELKİ" data-en="MAYBE">BELKİ</th>
+            <th data-tr="KATILAMAYACAĞIM" data-en="NOT ATTENDING">KATILAMAYACAĞIM</th>
+          </tr></thead>
+          <tbody id="performanceBody"><tr><td colspan="6" style="color:#888" data-tr="Yükleniyor..." data-en="Loading...">Yükleniyor...</td></tr></tbody>
+        </table>
+      </div>
+      <p id="performanceNote" style="font-size:12px;color:var(--muted);margin-bottom:0" data-tr="Katılım sayıları, oyuncuların yanıt verdiği etkinlikleri gösterir; yanıt verilmeyen etkinlikler katılmama olarak sayılmaz." data-en="Attendance counts reflect events players responded to; events without a response are not counted as absences.">Katılım sayıları, oyuncuların yanıt verdiği etkinlikleri gösterir; yanıt verilmeyen etkinlikler katılmama olarak sayılmaz.</p>
+    </article>
+  </div>
+</section>
+
 <section class="panel" id="fun">
 <!-- OYUN MERKEZİ -->
 <article class="card" style="margin-bottom:18px;text-align:center">
@@ -572,7 +606,38 @@ $('logoutBtn').onclick=()=>{location.href='/logout'};
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showPanel(b.dataset.panel));
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>showPanel(b.dataset.go));
 function showPanel(id){
-  if(id==="admin" && currentRole!=="admin") return;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.panel===id));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));}
+  if(id==="admin" && currentRole!=="admin") return;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.panel===id));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));if(id==="performance") loadPerformance();}
+let performanceLoaded = false;
+async function loadPerformance() {
+  const body = document.getElementById("performanceBody");
+  if (!body) return;
+  body.innerHTML = `<tr><td colspan="6" style="color:#888">${currentLang === "en" ? "Loading..." : "Yükleniyor..."}</td></tr>`;
+  try {
+    const response = await fetch("/api/performance", { cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Performans bilgileri alınamadı.");
+    const number = value => Number(value || 0).toLocaleString(currentLang === "en" ? "en-US" : "tr-TR");
+    document.getElementById("performancePlayers").textContent = number(data.summary.players);
+    document.getElementById("performanceT11").textContent = number(data.summary.totalT11);
+    document.getElementById("performanceEvents").textContent = number(data.summary.events);
+    document.getElementById("performanceYes").textContent = number(data.summary.yes);
+    body.innerHTML = data.players.length ? data.players.map((player, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${esc(player.name)}</td>
+        <td><strong>${number(player.total_t11)}</strong></td>
+        <td>${number(player.yes_count)}</td>
+        <td>${number(player.maybe_count)}</td>
+        <td>${number(player.no_count)}</td>
+      </tr>`).join("") : `<tr><td colspan="6" style="color:#888">${currentLang === "en" ? "No player records found." : "Oyuncu kaydı bulunamadı."}</td></tr>`;
+    performanceLoaded = true;
+  } catch (error) {
+    body.innerHTML = `<tr><td colspan="6" style="color:#ff7777">${esc(error.message || "Hata")}</td></tr>`;
+  }
+}
+
+document.getElementById("refreshPerformance")?.addEventListener("click", loadPerformance);
+
 let players = [];
 
 
