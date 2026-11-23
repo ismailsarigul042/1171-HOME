@@ -118,8 +118,14 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
  <article class="card span-4"><div class="card-head"><h3 data-tr="HIZLI ERİŞİM" data-en="QUICK ACCESS">HIZLI ERİŞİM</h3></div><div class="quick"><button data-go="roster" data-tr="♜ Kadro yönetimi" data-en="♜ Roster Management">♜ Kadro yönetimi<span data-tr="Oyuncu ekle / düzenle" data-en="Add / Edit Player">Oyuncu ekle / düzenle</span></button><button data-go="map" data-tr="⌖ Harita" data-en="⌖ Map">⌖ Harita<span data-tr="Konum alanı" data-en="Location Area">Konum alanı</span></button><button data-go="rally" data-tr="⚔ Rally Sync" data-en="⚔ Rally Sync">⚔ Rally Sync<span data-tr="Operasyon paneli" data-en="Operations Panel">Operasyon paneli</span></button><button data-go="admin" data-tr="♛ Yönetim" data-en="♛ Administration">♛ Yönetim<span data-tr="Genel araçlar" data-en="General Tools">Genel araçlar</span></button></div></article>
  <article class="card span-6"><div class="card-head"><h3 data-tr="SON AKTİVİTE" data-en="RECENT ACTIVITY">SON AKTİVİTE</h3><span class="tag">LOCAL</span></div><div id="activity" style="color:var(--muted);font-size:13px" data-tr="Henüz aktivite yok." data-en="No activity yet.">Henüz aktivite yok.</div>
  </article>
- <article class="card span-6"><div class="card-head"><h3 data-tr="1171 NOTU" data-en="1171 NOTES">1171 NOTU</h3></div>
-<p style="color:var(--muted);margin:0" data-tr="Bu alan duyurular, önemli koordinatlar ve ekip notları için kullanılabilir." data-en="This area can be used for announcements, important coordinates, and team notes.">Bu alan duyurular, önemli koordinatlar ve ekip notları için kullanılabilir.</p> </article>
+ <article class="card span-6"><div class="card-head"><h3 data-tr="1171 DUYURULARI" data-en="1171 ANNOUNCEMENTS">1171 DUYURULARI</h3><span class="tag" data-tr="İTTİFAK" data-en="ALLIANCE">İTTİFAK</span></div>
+ <div id="announcementAdminForm" style="display:none">
+  <input id="announcementTitle" class="field" maxlength="120" data-tr-placeholder="Duyuru başlığı" data-en-placeholder="Announcement title" placeholder="Duyuru başlığı">
+  <textarea id="announcementContent" class="field" maxlength="3000" rows="3" style="margin-top:8px;resize:vertical" data-tr-placeholder="Duyuru metnini yaz..." data-en-placeholder="Write the announcement..." placeholder="Duyuru metnini yaz..."></textarea>
+  <button id="addAnnouncement" class="gold-btn" type="button" data-tr="DUYURU YAYINLA" data-en="PUBLISH ANNOUNCEMENT">DUYURU YAYINLA</button>
+ </div>
+ <div id="announcementList" style="margin-top:12px;color:var(--muted)" data-tr="Duyurular yükleniyor..." data-en="Loading announcements...">Duyurular yükleniyor...</div>
+ </article>
  </div></section>
 <section class="panel" id="admin"><div class="grid">
  <article class="card span-6"><div class="card-head"><h3 data-tr="YÖNETİM ARAÇLARI" data-en="ADMIN TOOLS">YÖNETİM ARAÇLARI</h3><span class="tag">ADMIN</span></div><div class="quick"><button data-go="roster" data-tr="Oyuncu yönetimi" data-en="Player Management">Oyuncu yönetimi<span data-tr="Kadro kayıtları" data-en="Roster Records">Kadro kayıtları</span></button><button data-go="map" data-tr="Harita modülü" data-en="Map Module">Harita modülü<span data-tr="Koordinat çalışma alanı" data-en="Coordinate Workspace">Koordinat çalışma alanı</span></button><button data-go="rally" data-tr="Rally Sync" data-en="Rally Sync">Rally Sync<span data-tr="Operasyon senkronu" data-en="Operation Synchronization">Operasyon senkronu</span></button><button id="exportAdmin" data-tr="CSV dışa aktar" data-en="Export CSV">CSV dışa aktar<span data-tr="Kadro listesini indir" data-en="Download Roster List">Kadro listesini indir</span></button></div></article>
@@ -394,6 +400,78 @@ async function checkUserRole() {
   }
 }
 
+async function loadAnnouncements() {
+  const list = document.getElementById("announcementList");
+  try {
+    const response = await fetch("/admin-api/announcements", { cache: "no-store" });
+    if (!response.ok) throw new Error("load failed");
+    const items = await response.json();
+    if (!items.length) {
+      list.textContent = currentLang === "en" ? "There are no announcements yet." : "Henüz duyuru yayınlanmadı.";
+      return;
+    }
+    list.innerHTML = items.map(item => {
+      const date = item.created_at ? new Date(item.created_at.replace(" ", "T") + "Z").toLocaleString(currentLang === "en" ? "en-US" : "tr-TR") : "";
+      return `<div class="notice" style="margin:8px 0;white-space:normal">
+        <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+          <b style="color:var(--gold2)">${esc(item.title)}</b>
+          ${currentRole === "admin" ? `<button class="small-btn" type="button" onclick="deleteAnnouncement(${Number(item.id)})">${currentLang === "en" ? "Delete" : "Sil"}</button>` : ""}
+        </div>
+        <div style="margin-top:7px;white-space:pre-wrap;overflow-wrap:anywhere">${esc(item.content)}</div>
+        <small style="display:block;color:var(--muted);margin-top:8px">${esc(date)}</small>
+      </div>`;
+    }).join("");
+  } catch (error) {
+    list.textContent = currentLang === "en" ? "Announcements could not be loaded. Please refresh the page." : "Duyurular yüklenemedi. Lütfen sayfayı yenileyin.";
+  }
+}
+
+async function initAnnouncements() {
+  await checkUserRole();
+  const form = document.getElementById("announcementAdminForm");
+  if (currentRole === "admin") form.style.display = "block";
+  document.getElementById("addAnnouncement").onclick = addAnnouncement;
+  await loadAnnouncements();
+}
+
+async function addAnnouncement() {
+  if (currentRole !== "admin") return;
+  const title = document.getElementById("announcementTitle").value.trim();
+  const content = document.getElementById("announcementContent").value.trim();
+  if (!title || !content) {
+    alert(currentLang === "en" ? "Enter both a title and announcement text." : "Başlık ve duyuru metnini birlikte gir.");
+    return;
+  }
+  const response = await fetch("/admin-api/announcements", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, content })
+  });
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    alert(data.error || (currentLang === "en" ? "Announcement could not be published." : "Duyuru yayınlanamadı."));
+    return;
+  }
+  document.getElementById("announcementTitle").value = "";
+  document.getElementById("announcementContent").value = "";
+  await loadAnnouncements();
+}
+
+window.deleteAnnouncement = async id => {
+  if (currentRole !== "admin") return;
+  if (!confirm(currentLang === "en" ? "Delete this announcement?" : "Bu duyuruyu silmek istiyor musun?")) return;
+  const response = await fetch("/admin-api/announcements", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id })
+  });
+  if (!response.ok) {
+    alert(currentLang === "en" ? "Announcement could not be deleted." : "Duyuru silinemedi.");
+    return;
+  }
+  await loadAnnouncements();
+};
+
 const $=id=>document.getElementById(id);
 $('logoutBtn').onclick=()=>{location.href='/logout'};
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showPanel(b.dataset.panel));
@@ -536,6 +614,7 @@ async function initPlayers() {
 }
 
 initPlayers();
+initAnnouncements();
 
 let rallies = [];
 
